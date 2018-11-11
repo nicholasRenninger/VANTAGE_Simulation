@@ -11,12 +11,12 @@ OPTICAL_CAMERA_FPS: 30
 # a list of the U sizes and ordering (1U, 2U, 3U) of CubeSats to launch
 # the CubeSats are loaded into the deployer tube like a musket
 CUBESATS_SIZES:
-  # this one goes against the pusher plate
+  # this one goes against the pusher plate (back cubesat)
   - '1U'
   - '1U'
   - '1U'
   - '3U'
-  # the above CubeSat one leaves first
+  # the above CubeSat one leaves first (front cubesat)
 
 # Select the deployment tube you would like to launch from
 DESIRED_DEPLOYMENT_TUBE: 2
@@ -38,20 +38,20 @@ CUBESAT_SEPARATIONS:
 # [cm/s]
 CUBESAT_LIN_VELS:
   v_x:
-    - 50
-    - 50
-    - 50
-    - 50
+    - 0
+    - 0
+    - 0
+    - 0
   v_y:
-    - 50
-    - 50
-    - 50
-    - 50
+    - 0
+    - 0
+    - 0
+    - 0
   v_z:
-    - 400
-    - 400
-    - 400
-    - 400
+    - 100
+    - 100
+    - 100
+    - 100
 
 # a list of the cartesian CubeSats rotation velocities for each CubeSat in the
 # simulation.

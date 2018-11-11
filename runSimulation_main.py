@@ -236,9 +236,10 @@ def setup_cubesats(settings, des_tube_origin, doc):
 
         # need to define all animation inputs
         posStart = pos[:]
+        rotStart = rot[:]
 
-        rotStart = rot
-
+        # move cubesat to the right location and animate it's motion
+        # (translation and rotation) over the duration of the simulation
         animateCubeSat(CubeSatObj, posStart, rotStart,
                        v, omega, cubesat_length,
                        settings, des_tube_origin, doc)
@@ -250,12 +251,10 @@ def setup_cubesats(settings, des_tube_origin, doc):
 # @brief      moves and rotates the C4D obj by pos and rot respectively
 #
 # @param      obj   The C4D object to manipulate
-# @param      pos   A list of positions in global coords to move obj by
-#                   [cm]
-# @param      rot   A list of euler angles rotations to rotate obj by
-#                   [obj]
+# @param      pos   A list of positions in global coords to move obj by [cm]
+# @param      rot   A list of euler angles rotations to rotate obj by [obj]
 #
-# @return     None
+# @return     obj has been moved and rotated to pos and rot, respectively
 #
 def pos_rot_obj(obj, pos, rot):
 
@@ -267,6 +266,39 @@ def pos_rot_obj(obj, pos, rot):
     obj()[c4d.ID_BASEOBJECT_REL_POSITION, c4d.VECTOR_Z] = pos[2]
 
 
+#
+# @brief      Positions and animates the CubeSat object based on the
+#             simulation, animation, and geometric definitions given in the
+#             config file
+#
+#             @see getAnimationFrameNumbers and @see getLastPosAndRot for most
+#             of the specific animation calculations - animations are applied
+#             with the deployer movement constraints in mind
+#
+# @param      CubeSatObj       The cubesat object to place and animate
+# @param      posStart         The start location of the CubeSat's centroid
+#                              in global coords.
+#                              [cm, cm, cm]
+# @param      rotStart         The start rotation of the CubeSat
+#                              in global coords.
+#                              [rad, rad, rad]
+# @param      cubeSatLinVel    The cube sat lin velocity vector to animate
+#                              [cm/s, cm/s, cm/s]
+# @param      cubeSatRotVel    The cube sat rot velocity vector to animate
+#                              [rad/s, rad/s, rad/s]
+# @param      cubesat_length   The total cubesat length
+#                              [cm]
+# @param      settings         The settings dict containing all config
+#                              parameters
+# @param      des_tube_origin  The desired deployment tube origin in global
+#                              coords
+#                              [cm]
+# @param      doc              The current C4D document to add the cubesat
+#                              animation to
+#
+# @return     CubeSatObj will have realistic animations of the desired linear
+#             and rotational velocities
+#
 def animateCubeSat(CubeSatObj, posStart, rotStart,
                    cubeSatLinVel, cubeSatRotVel, cubesat_length, settings,
                    des_tube_origin, doc):
@@ -319,7 +351,7 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
                     linVelZStartFrame, fps, posStart)
     addValueAtFrame(xtrack, ytrack, ztrack, endFrame, endFrame, fps, posEnd)
 
-    # add roatation animation - linear variation of rotation from start to end
+    # add rotation animation - linear variation of rotation from start to end
     # frames
     addValueAtFrame(wxtrack, wytrack, wztrack, rotAndLinXYVelStartFrame,
                     rotAndLinXYVelStartFrame, fps, rotStart)
@@ -329,12 +361,47 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
     c4d.CallCommand(12501)
 
 
+#
+# @brief      Used to get an animation track for a given type of track for the
+#             given channel
+#
+# @param      obj        The c4d object to get an animation track for
+# @param      trackID    The track id (track type) - defines what sort
+#                        animation you want to add to the given channel e.g.:
+#
+#                       \code{.py}
+#                       # animate postion
+#                       trackID = c4d.ID_BASEOBJECT_POSITION
+#
+#                       # animate postion
+#                       trackID = c4d.ID_BASEOBJECT_ROTATION
+#                       \endcode
+#
+# @param      channelID  The channel id (channel type) defines what channel
+#                        you want to add the given animation type to e.g.:
+#
+#                       \code{.py}
+#                       # use x animation channel for the animation type
+#                       # (trackID)
+#                       channelID = c4d.VECTOR_X
+#
+#                       # use y animation channel for the animation type
+#                       # (trackID)
+#                       channelID = c4d.VECTOR_Y
+#
+#                       # use z animation channel for the animation type
+#                       # (trackID)
+#                       channelID = c4d.VECTOR_Z
+#                       \endcode
+# @param      doc        The current C4D document in use
+#
+# @return     The xyz track with the given trackID and channelID
+#
 def getXYZtrack(obj, trackID, channelID, doc):
 
     # Find the Track
     param = c4d.DescID(c4d.DescLevel(trackID, c4d.DTYPE_VECTOR, 0),
-                       c4d.DescLevel(channelID, c4d.DTYPE_REAL, 0)
-                       )
+                       c4d.DescLevel(channelID, c4d.DTYPE_REAL, 0))
     track = obj.FindCTrack(param)
 
     # Create if no track found
@@ -346,32 +413,76 @@ def getXYZtrack(obj, trackID, channelID, doc):
     return track
 
 
-def addValueAtFrame(xtrack, ytrack, ztrack, XYStartFrame,
-                    ZStartFrame, fps, startVec):
+#
+# @brief      Adds a frame animation value at the given frame #
+#
+# @param      xtrack        The X-component animation track to add the value to
+# @param      ytrack        The Y-component animation track to add the value to
+# @param      ztrack        The Z-component animation track to add the value to
+# @param      XYFrameNum    The frame # to add the XY-component value to
+# @param      ZFrameNum     The frame # to add the Z-component value to
+# @param      fps           The fps of the simulation
+# @param      valueVec      The list of values [x, y, z] to add to each
+#                           respective animation track
+#
+# @return     xtrack, ytrack, and ztrack have valueVec[0], valueVec[1],
+#             valueVec[2] (respectively) added in the XYFrameNum and ZFrameNum
+#             animation frames
+#
+def addValueAtFrame(xtrack, ytrack, ztrack, XYFrameNum,
+                    ZFrameNum, fps, valueVec):
 
     # Add a key to each CubeSat linear position tracks
     xtrack = xtrack.GetCurve()
-    xkey = xtrack.AddKey(c4d.BaseTime(XYStartFrame, fps))['key']
-    xkey.SetValue(xtrack, startVec[0])
+    xkey = xtrack.AddKey(c4d.BaseTime(XYFrameNum, fps))['key']
+    xkey.SetValue(xtrack, valueVec[0])
 
     # set the track position variation to linear
     c4d.CallCommand(465001092)
 
     ytrack = ytrack.GetCurve()
-    ykey = ytrack.AddKey(c4d.BaseTime(XYStartFrame, fps))['key']
-    ykey.SetValue(ytrack, startVec[1])
+    ykey = ytrack.AddKey(c4d.BaseTime(XYFrameNum, fps))['key']
+    ykey.SetValue(ytrack, valueVec[1])
 
     # set the track position variation to linear
     c4d.CallCommand(465001092)
 
     ztrack = ztrack.GetCurve()
-    zkey = ztrack.AddKey(c4d.BaseTime(ZStartFrame, fps))['key']
-    zkey.SetValue(ztrack, startVec[2])
+    zkey = ztrack.AddKey(c4d.BaseTime(ZFrameNum, fps))['key']
+    zkey.SetValue(ztrack, valueVec[2])
 
     # set the track position variation to linear
     c4d.CallCommand(465001092)
 
 
+#
+# @brief      Calculates what the final position and total rotational change of
+#             the object should be at the last frame of the simulation.
+#
+#             Takes into account the simulation fps, the maximum simulation z
+#             distance, and the fact that (x/y linear) / rotational velocities
+#             start at different frames than the z linear velocity.
+#
+#             @see getAnimationFrameNumbers() for more info on how animation
+#                  start / end frames are calculated
+#
+# @param      max_time                  The maximum simulation time [s]
+# @param      fps                       The fps of the simulation [cm]
+# @param      v                         The linear velocity vector of the
+#                                       object [cm/s]
+# @param      omega                     The rotational velocity vector of the
+#                                       object [rad/s]
+# @param      L                         The length of the deployer tube [cm]
+# @param      posStart                  The starting position vector of the
+#                                       object [cm, cm, cm]
+# @param      rotAndLinXYVelStartFrame  The rot and lin xy velocity start frame
+#                                       [frame #]
+# @param      endFrame                  The end frame of the simulation
+#                                       [frame #]
+#
+# @return     [final position vector of the object at the endFrame [cm],
+#              total rotation of the object at the endFrame [rad]]
+#
 def getLastPosAndRot(max_time, fps, v, omega, L, posStart,
                      rotAndLinXYVelStartFrame, endFrame):
 
@@ -402,16 +513,20 @@ def getLastPosAndRot(max_time, fps, v, omega, L, posStart,
 # @brief      Gets the animation start and stop frame numbers given simulation
 #             parameters
 #
-# @param      L               Length of the Deployer
-#                             [cm]
-# @param      cubesat_length  The cubesat length
-#                             [cm]
-# @param      posStart        The starting centroid position of the cubesat
-#                             [cm]
-# @param      posEnd          The ending centroid position of the cubesat
-#                             [cm]
-# @param      fps             The fps of the simulation
-# @param      v_z             The main cubesat velocity component
+#             Takes into account that the animation for x,y linear velocity and
+#             all rotational velocities can only begin once the cubesat is
+#             clear from the deployer tube (the tube constrains a cubesat in
+#             all but the linear z direction)
+#
+# @param      L                Length of the Deployer [cm]
+# @param      cubesat_length   The cubesat length [cm]
+# @param      posStart         The starting centroid position of the cubesat
+#                              [cm]
+# @param      maxDist          The maximum distance [cm]
+# @param      des_tube_origin  The desired tube origin in global coords [cm]
+# @param      fps              The fps of the simulation [frames / s]
+# @param      v_z              The main cubesat velocity component [cm/s]
+# @param      posEnd           The ending centroid position of the cubesat [cm]
 #
 # @return     [start frame for lin. z velocity animation,
 #              start frame for rot. and lin. x-y velocity animation,
