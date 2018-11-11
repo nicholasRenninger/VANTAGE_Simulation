@@ -1,7 +1,6 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-# G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'
 G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
 # G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
@@ -20,7 +19,7 @@ CUBESATS_SIZES:
   # the above CubeSat one leaves first
 
 # Select the deployment tube you would like to launch from
-DESIRED_DEPLOYMENT_TUBE: 8
+DESIRED_DEPLOYMENT_TUBE: 2
 
 # a list of the cartesian CubeSats spacings between each CubeSat in the
 # deployment simulation.
@@ -39,14 +38,20 @@ CUBESAT_SEPARATIONS:
 # [cm/s]
 CUBESAT_LIN_VELS:
   v_x:
-    - 0
-    - 0
+    - 50
+    - 50
+    - 50
+    - 50
   v_y:
-    - 0
-    - 0
+    - 50
+    - 50
+    - 50
+    - 50
   v_z:
-    - 100
-    - 100
+    - 400
+    - 400
+    - 400
+    - 400
 
 # a list of the cartesian CubeSats rotation velocities for each CubeSat in the
 # simulation.
@@ -54,23 +59,29 @@ CUBESAT_LIN_VELS:
 # [rad/s]
 CUBESAT_ROT_VELS:
   omega_x:
-    - 0
-    - 0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
   omega_y:
-    - 0
-    - 0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
   omega_z:
-    - 0
-    - 0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
 
-################################################################################
+###############################################################################
 ### END of settings you should need to edit
-################################################################################
+###############################################################################
 
 # how far to allow the CubeSats to move in z
 # assumes linear motion of the CubeSats
-# [m]
-MAX_RANGE: 100
+# [cm]
+MAX_RANGE: 10000
 
 ###############
 ### BEGINNING of the cubesat properties
@@ -115,7 +126,7 @@ CUBESAT_TAB_LENGTH: 0.5
 # [cm]
 VANTAGE_POS:
   - 60
-  - 0
+  - -21.6
   - -74
 
 # [Yaw, Pitch, Roll] euler angles of the deployer from its initial configuration
@@ -128,11 +139,11 @@ VANTAGE_ROT:
 # Deployer parameterization variables
 # defined in 13-5-NR_Deployer_C4D_definitions.pdf &
 #            13-5-NR_Dual_Quadpack_Simulation_Assem_v2.pdf
-MU: 7.2794
+MU: 7.2
 BETA: 14.4
-SIGMA: 7.2895  # LoL
-PSI: 13.04
-GAMMA: 26.08
+SIGMA: 6.9  # LoL
+PSI: 13.9
+GAMMA: 26.1
 L: 81.25
 
 # Deployer Tube Origins in relative to deployer origin Each tube contains the
