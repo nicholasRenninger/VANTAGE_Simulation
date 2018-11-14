@@ -1,8 +1,8 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
-# G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
+# G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
+G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to render the simulation video at
 # [frames/sec]
@@ -181,3 +181,34 @@ CUBESAT_FILEPATHS:
   4U: '13 Simulation\2 3D Models\4U_Slug.SLDPRT'
   5U: '13 Simulation\2 3D Models\5U_Slug.SLDPRT'
   6U: '13 Simulation\2 3D Models\6U_Slug.SLDPRT'
+
+
+# camera location in X,Y,Z relative to the VANTAGE frame's origin
+# [cm]
+CAMERA_LOC:
+  - 0
+  - 0
+  - 0
+
+# camera rotation H,P,B
+# [rad]
+CAMERA_ROT:
+  - 0
+  - 0
+  - 0
+
+# camera focus and rendering setting
+# Focal length in [mm]
+# Aperture [mm]
+# Horizontal FOV [mm]
+# Vertical FOV [mm]
+# X_res [Pixel]
+# y_res [Pixel]
+# Focus position (where you actual focus) [mm]
+FOCAL_LENGTH: 36
+APERTURE: 36
+H_FOV: 0.927
+V_FOV: 0.548
+X_Res: 4096
+Y_Res: 4096
+Focus: 2000

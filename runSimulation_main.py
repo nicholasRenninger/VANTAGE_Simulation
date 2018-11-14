@@ -2,7 +2,6 @@ import c4d
 import yaml
 import os
 
-
 __author__ = "Nicholas Renninger, Jerry Wang"
 __copyright__ = "'Copyright' 2018, VANTAGE"
 __credits__ = ["Long Dong Silver"]
@@ -14,9 +13,20 @@ __status__ = "Development"
 
 
 def main():
-
     settingsFile = os.path.join('config', 'config_simulation_template.yaml')
 
+    runAndSaveSimulation(settingsFile)
+
+
+#
+# @brief      Creates an entire simulation case given the parameters in the
+#             settingsFile
+#
+# @param      settingsFile  The full path to the YAML settings file
+#
+# @return     a saved C4D simulation case in the C4D case simulation directory
+#
+def runAndSaveSimulation(settingsFile):
     # this is the current c4d session we need to modify
     doc = c4d.documents.GetActiveDocument()
 
@@ -29,6 +39,11 @@ def main():
     # load in the all of the cubesats, position them, and prescribe their
     # motion
     setup_cubesats(settings, des_tube_origin, doc)
+
+    # add the camera after the VANTAGE origin has already been set
+    addcamera(settings, doc)
+
+    print 'Done with loading in simulation case. Have Fun!!'
 
 
 #
@@ -44,7 +59,6 @@ def main():
 # @return     Settings dict from YAML config
 #
 def simulationSetup(settingsFile, doc):
-
     # Read YAML settings file
     with open(settingsFile, 'r') as stream:
         settings = yaml.load(stream)
@@ -69,7 +83,70 @@ def simulationSetup(settingsFile, doc):
     # keep the max simulation time for later
     settings['MAX_TIME'] = maxTimeInS
 
+    print 'Done Configuring Simulation'
+
     return settings
+
+
+#
+# @brief      Adds the camera and updates the rendering settings to use the new
+#             camera settings
+#
+# @param      settings  The settings dict from the config file
+# @param      doc       The current c4d document
+#
+# @return     the active camera should be set to a placed properly in the
+#             deployer, with all of the camera properties given in the config
+#             file
+#
+def addcamera(settings, doc):
+
+    camera = c4d.BaseObject(c4d.Ocamera)
+    rdata = doc.GetActiveRenderData()
+
+    foc_length = settings['FOCAL_LENGTH']
+    Ape = settings['APERTURE']
+    fovH = settings['H_FOV']
+    fovV = settings['V_FOV']
+    xres = settings['X_Res']
+    yres = settings['Y_Res']
+    fps = settings['OPTICAL_CAMERA_FPS']
+    cameraloc = settings['CAMERA_LOC']
+    camerarot = settings['CAMERA_ROT']
+
+    # setting camera properties
+    camera()[c4d.CAMERA_FOCUS] = foc_length
+    camera()[c4d.CAMERAOBJECT_APERTURE] = Ape
+    camera()[c4d.CAMERAOBJECT_FOV] = fovH
+    camera()[c4d.CAMERAOBJECT_FOV_VERTICAL] = fovV
+
+    # setting camera location and orientation relative to the VANTAGE frame
+    camera()[c4d.ID_BASEOBJECT_REL_POSITION, c4d.VECTOR_X] = cameraloc[0]
+    camera()[c4d.ID_BASEOBJECT_REL_POSITION, c4d.VECTOR_Y] = cameraloc[1]
+    camera()[c4d.ID_BASEOBJECT_REL_POSITION, c4d.VECTOR_Z] = cameraloc[2]
+    camera()[c4d.ID_BASEOBJECT_REL_ROTATION, c4d.VECTOR_X] = camerarot[0]
+    camera()[c4d.ID_BASEOBJECT_REL_ROTATION, c4d.VECTOR_Y] = camerarot[1]
+    camera()[c4d.ID_BASEOBJECT_REL_ROTATION, c4d.VECTOR_Z] = camerarot[2]
+
+    # setting render settings
+    rdata[c4d.RDATA_XRES] = xres
+    rdata[c4d.RDATA_YRES] = yres
+    rdata[c4d.RDATA_FRAMERATE] = fps
+
+    # turn on physics rendering engine
+    rdata[c4d.RDATA_RENDERENGINE] = 1037639
+
+    # changing to MP4 output
+    rdata[c4d.RDATA_FORMAT] = 1125
+
+    # changing to rendering the full frame
+    rdata[c4d.RDATA_FRAMESEQUENCE] = 2
+
+    # insert hte configured camera object
+    doc.InsertObject(camera)
+
+    # changing the current render viewpoint to the inserted camera
+    c4d.CallCommand(55000, 2)
 
 
 #
@@ -86,7 +163,6 @@ def simulationSetup(settingsFile, doc):
 #                  [x, y, z] ~ [cm]
 #
 def setup_deployer(settings, doc):
-
     dep = settings['DEPLOYER_FILEPATH']
     gDrive = settings['G_DRIVE_PATH']
     fullFile = os.path.join(gDrive, dep)
@@ -156,7 +232,6 @@ def setup_deployer(settings, doc):
 # @return     a list of each C4D cubesat object added to the simulation
 #
 def setup_cubesats(settings, des_tube_origin, doc):
-
     objs = []
     gDrive = settings['G_DRIVE_PATH']
 
@@ -244,6 +319,8 @@ def setup_cubesats(settings, des_tube_origin, doc):
                        v, omega, cubesat_length,
                        settings, des_tube_origin, doc)
 
+        print 'Loaded in a ' + cubeSatSizes_strs[ii] + ' CubeSat Model'
+
     return objs
 
 
@@ -257,7 +334,6 @@ def setup_cubesats(settings, des_tube_origin, doc):
 # @return     obj has been moved and rotated to pos and rot, respectively
 #
 def pos_rot_obj(obj, pos, rot):
-
     obj()[c4d.ID_BASEOBJECT_REL_ROTATION, c4d.VECTOR_X] = rot[0]
     obj()[c4d.ID_BASEOBJECT_REL_ROTATION, c4d.VECTOR_Y] = rot[1]
     obj()[c4d.ID_BASEOBJECT_REL_ROTATION, c4d.VECTOR_Z] = rot[2]
@@ -302,7 +378,6 @@ def pos_rot_obj(obj, pos, rot):
 def animateCubeSat(CubeSatObj, posStart, rotStart,
                    cubeSatLinVel, cubeSatRotVel, cubesat_length, settings,
                    des_tube_origin, doc):
-
     # [cm]
     L = settings['L']
 
@@ -398,7 +473,6 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
 # @return     The xyz track with the given trackID and channelID
 #
 def getXYZtrack(obj, trackID, channelID, doc):
-
     # Find the Track
     param = c4d.DescID(c4d.DescLevel(trackID, c4d.DTYPE_VECTOR, 0),
                        c4d.DescLevel(channelID, c4d.DTYPE_REAL, 0))
@@ -431,7 +505,6 @@ def getXYZtrack(obj, trackID, channelID, doc):
 #
 def addValueAtFrame(xtrack, ytrack, ztrack, XYFrameNum,
                     ZFrameNum, fps, valueVec):
-
     # Add a key to each CubeSat linear position tracks
     xtrack = xtrack.GetCurve()
     xkey = xtrack.AddKey(c4d.BaseTime(XYFrameNum, fps))['key']
@@ -485,7 +558,6 @@ def addValueAtFrame(xtrack, ytrack, ztrack, XYFrameNum,
 #
 def getLastPosAndRot(max_time, fps, v, omega, L, posStart,
                      rotAndLinXYVelStartFrame, endFrame):
-
     # the cubesat can only start rotating / moving in X-Y after its not
     # constrained by the deployer tube
     rot_linXY_time = (endFrame - rotAndLinXYVelStartFrame) / fps
@@ -534,7 +606,6 @@ def getLastPosAndRot(max_time, fps, v, omega, L, posStart,
 #
 def getAnimationFrameNumbers(L, cubesat_length, posStart, maxDist,
                              des_tube_origin, fps, v_z):
-
     # need to compute frame numbers for where to apply the animation starts and
     # stops for linear and rotational animations
 
