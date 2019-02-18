@@ -1,8 +1,8 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-# G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
-G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
+G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
+# G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to render the simulation video at
 # [frames/sec]
@@ -19,9 +19,9 @@ CUBESATS_SIZES:
   # the above CubeSat one leaves first (front cubesat)
 
 # Select the deployment tube you would like to launch from
-DESIRED_DEPLOYMENT_TUBE: 2
+DESIRED_DEPLOYMENT_TUBE: 8
 
-# a list of the cartesian CubeSats spacings between each CubeSat in the
+# a list of the Cartesian CubeSats spacings between each CubeSat in the
 # deployment simulation.
 #
 # If there are N CUBESATS_SIZES, there will be N - 1 CUBESAT_SEPARATIONS
@@ -32,7 +32,7 @@ CUBESAT_SEPARATIONS:
   - 3
   - 3
 
-# a list of the cartesian CubeSats linear velocities for each CubeSat in the
+# a list of the Cartesian CubeSats linear velocities for each CubeSat in the
 # simulation.
 # [v_x, v_y, v_z]
 # [cm/s]
@@ -53,7 +53,7 @@ CUBESAT_LIN_VELS:
     - 100
     - 100
 
-# a list of the cartesian CubeSats rotation velocities for each CubeSat in the
+# a list of the Cartesian CubeSats rotation velocities for each CubeSat in the
 # simulation.
 # [omega_x, omega_x, omega_x]
 # [rad/s]
@@ -112,57 +112,72 @@ CUBESAT_TAB_LENGTH: 0.5
 ###############
 
 ###############
-### BEGINNING of the deployer geometry definition. See 13-5 for a visual
-### definition of all variables listed here. All dimensions in [cm]
+### BEGINNING of the deployer geometry definition. See
+### 13-5-deployer_VANTAGE_geometry_and_coordinate_frame_defs for a visual
+### definition of all variables listed here. All dimensions in [cm] unless
+### otherwise noted.
 ###############
 
 # [x, y, z] position of the global VANTAGE orign relative to the deployer's
 # origin.
 #
-# Specified in the global simulation cartesian coordinate system.
+# Specified in the global simulation Cartesian coordinate system.
 #
 # After this operation, the global simulation origin will be aligned with the
 # VANTAGE Cartesian frame origin
-# [cm]
-VANTAGE_POS:
-  - 60
-  - -21.6
-  - -74
+#
+# Just need to define which tube VANTAGE is in. The global origin is defined as
+# in 13-5
+VANTAGE_POS: 4
 
 # [Yaw, Pitch, Roll] euler angles of the deployer from its initial configuration
 # [rad]
 VANTAGE_ROT:
-  - 3.1415926  # pi
-  - 1.5707963  # pi/2
+  - -3.1415926
+  - 0
   - 0
 
+# Sensor location parameterization variables. After moving the deployer origin
+# to the correct position in the global coordinate frame, then move the deployer
+# origin from the centerline to the VCF origin according to these parameters
+#
+# defined in 13-5
+# [cm]
+PHI: 1.251
+XI: 1.825
+NABLA: -3.725
+RHO: -4.025
+P_OPTICAL: 5.17
+D_TOF: 0.48
+
 # Deployer parameterization variables
-# defined in 13-5-NR_Deployer_C4D_definitions.pdf &
-#            13-5-NR_Dual_Quadpack_Simulation_Assem_v2.pdf
-MU: 7.2
-BETA: 14.4
-SIGMA: 6.9  # LoL
-PSI: 13.9
-GAMMA: 26.1
+# defined in 13-5
+# [cm]
+MU: 7.2794
+BETA: 14.5588
+SIGMA: 6.4
+PSI: 13.92
+GAMMA: 26.08
 L: 81.25
 
-# Deployer Tube Origins in relative to deployer origin Each tube contains the
-# coefficients of the Deployer parameterization variables needed to locate the
-# tube origin
+# Deployer tube origins are relative to deployer origin
 #
-# The order of the variables in each coefficent array is given as:
-# x ~ [SIGMA, PSI, GAMMA]
-# y ~ [MU, BETA]
+# Each tube contains the coefficients of the deployer parameterization variables
+# needed to locate the tube origin
+#
+# The order of the variables in each coefficient array is given as:
+# x ~ [PSI, GAMMA]
+# y ~ [MU]
 # z ~ [L]
 TUBE_ORIGIN_COEFFS:
-  - {'x': [-1, -2, -1], 'y': [1, 1], 'z': [0]}
-  - {'x': [-1, -1, -1], 'y': [1, 1], 'z': [0]}
-  - {'x': [-1, -1, 0], 'y': [1, 1], 'z': [0]}
-  - {'x': [-1, 0, 0], 'y': [1, 1], 'z': [0]}
-  - {'x': [-1, 0, 0], 'y': [1, 0], 'z': [0]}
-  - {'x': [-1, -1, 0], 'y': [1, 0], 'z': [0]}
-  - {'x': [-1, -1, -1], 'y': [1, 0], 'z': [0]}
-  - {'x': [-1, -2, -1], 'y': [1, 0], 'z': [0]}
+  - {'x': [-1, -1], 'y': [1], 'z': [-1]}
+  - {'x': [0, -1], 'y': [1], 'z': [-1]}
+  - {'x': [0, 1], 'y': [1], 'z': [-1]}
+  - {'x': [1, 1], 'y': [1], 'z': [-1]}
+  - {'x': [1, 1], 'y': [-1], 'z': [-1]}
+  - {'x': [0, 1], 'y': [-1], 'z': [-1]}
+  - {'x': [0, -1], 'y': [-1], 'z': [-1]}
+  - {'x': [-1, -1], 'y': [-1], 'z': [-1]}
 
 ###############
 ### END of the deployer geometry definition
@@ -170,7 +185,7 @@ TUBE_ORIGIN_COEFFS:
 
 # relative filepath to the Google Drive location of the deployer model file
 DEPLOYER_FILEPATH:
-  '13 Simulation\2 3D Models\NR_Dual_Quadpack_Simulation_Assem_v3.STL'
+  '13 Simulation\2 3D Models\NR_Dual_Quadpack_Simulation_Assem.SLDPRT'
 
 # relative filepath to the Google Drive location of the 1U, 2U, & 3U CubeSat
 # model files
@@ -205,7 +220,7 @@ CAMERA_ROT:
 # X_res [Pixel]
 # y_res [Pixel]
 # Focus position (where you actual focus) [mm]
-FOCAL_LENGTH: 36
+FOCAL_LENGTH: 35
 APERTURE: 36
 H_FOV: 0.927
 V_FOV: 0.548
