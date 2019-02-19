@@ -43,7 +43,7 @@ def runAndSaveSimulation(settingsFile):
     setup_cubesats(settings, des_tube_origin, doc)
 
     # add the camera after the VANTAGE origin has already been set
-    # addcamera(settings, doc)
+    addCamera(settings, doc)
 
     print 'Done with loading in simulation case. Have Fun!!'
 
@@ -108,7 +108,7 @@ def simulationSetup(settingsFile, doc):
 #             deployer, with all of the camera properties given in the config
 #             file
 #
-def addcamera(settings, doc):
+def addCamera(settings, doc):
 
     camera = c4d.BaseObject(c4d.Ocamera)
     rdata = doc.GetActiveRenderData()
@@ -451,10 +451,6 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
     # [cm]
     L = settings['L']
 
-    # maximum distance all of the CubeSats should end up at
-    # [cm]
-    max_dist = settings['MAX_RANGE']
-
     # time until the cubesats reach MAX_DISTANCE
     # [s]
     max_time = settings['MAX_TIME']
@@ -465,7 +461,7 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
     (linVelZStartFrame,
      rotAndLinXYVelStartFrame,
      endFrame) = getAnimationFrameNumbers(L, cubesat_length,
-                                          posStart, max_dist,
+                                          posStart, max_time,
                                           des_tube_origin,
                                           fps, cubeSatLinVel[2])
 
@@ -575,6 +571,7 @@ def getXYZtrack(obj, trackID, channelID, doc):
 #
 def addValueAtFrame(xtrack, ytrack, ztrack, XYFrameNum,
                     ZFrameNum, fps, valueVec):
+
     # Add a key to each CubeSat linear position tracks
     xtrack = xtrack.GetCurve()
     xkey = xtrack.AddKey(c4d.BaseTime(XYFrameNum, fps))['key']
@@ -664,20 +661,22 @@ def getLastPosAndRot(max_time, fps, v, omega, L, posStart,
 # @param      cubesat_length   The cubesat length [cm]
 # @param      posStart         The starting centroid position of the cubesat
 #                              [cm]
-# @param      maxDist          The maximum distance [cm]
+# @param      max_time         The maximum time to simulate to
 # @param      des_tube_origin  The desired tube origin in global coords [cm]
 # @param      fps              The fps of the simulation [frames / s]
 # @param      v_z              The main cubesat velocity component [cm/s]
-# @param      posEnd           The ending centroid position of the cubesat [cm]
+# @param      posEnd  The ending centroid position of the cubesat [cm]
 #
-# @return     [start frame for lin. z velocity animation,
-#              start frame for rot. and lin. x-y velocity animation,
-#              start frame for both lin. & rot velocity animation]
+# @return     [start frame for lin. z velocity animation, start frame for rot.
+#             and lin. x-y velocity animation, start frame for both lin. & rot
+#             velocity animation]
 #
-def getAnimationFrameNumbers(L, cubesat_length, posStart, maxDist,
+def getAnimationFrameNumbers(L, cubesat_length, posStart, max_time,
                              des_tube_origin, fps, v_z):
     # need to compute frame numbers for where to apply the animation starts and
     # stops for linear and rotational animations
+
+    maxDist = v_z * max_time
 
     # we need the CubeSats to be moving linearly in z from the very first frame
     linVelZStartFrame = 0

@@ -48,7 +48,7 @@ CUBESAT_LIN_VELS:
     - 0
     - 0
   v_z:
-    - 100
+    - 50
     - 100
     - 100
     - 100
@@ -59,20 +59,20 @@ CUBESAT_LIN_VELS:
 # [rad/s]
 CUBESAT_ROT_VELS:
   omega_x:
-    - 1.0
-    - 1.0
-    - 1.0
-    - 1.0
+    - 0.1
+    - 0.1
+    - 0.1
+    - 0.1
   omega_y:
-    - 1.0
-    - 1.0
-    - 1.0
-    - 1.0
+    - 0.1
+    - 0.1
+    - 0.1
+    - 0.1
   omega_z:
-    - 1.0
-    - 1.0
-    - 1.0
-    - 1.0
+    - 0.1
+    - 0.1
+    - 0.1
+    - 0.1
 
 ###############################################################################
 ### END of settings you should need to edit
@@ -221,9 +221,9 @@ CAMERA_ROT:
 # y_res [Pixel]
 # Focus position (where you actual focus) [mm]
 FOCAL_LENGTH: 35
-APERTURE: 36
+APERTURE: 8.92796
 H_FOV: 0.927
 V_FOV: 0.548
-X_Res: 4096
-Y_Res: 4096
+X_Res: 3088
+Y_Res: 2076
 Focus: 2000
