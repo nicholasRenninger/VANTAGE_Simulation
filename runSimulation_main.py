@@ -1,6 +1,8 @@
 import c4d
 import yaml
 import os
+import json
+import errno
 
 __author__ = "Nicholas Renninger, Jerry Wang"
 __copyright__ = "'Copyright' 2019, VANTAGE"
@@ -13,37 +15,44 @@ __status__ = "Development"
 
 
 def main():
+    configFileName = 'config_simulation_template'
     settingsFile = os.path.join('config',
-                                'config_simulation_template.yaml')
+                                configFileName + '.yaml')
 
-    runAndSaveSimulation(settingsFile)
+    runAndSaveSimulation(settingsFile, configFileName)
 
 
 #
 # @brief      Creates an entire simulation case given the parameters in the
 #             settingsFile
 #
-# @param      settingsFile  The full path to the YAML settings file
+# @param      settingsFile    The full path to the YAML settings file
+# @param      configFileName  The configuration file name
 #
 # @return     a saved C4D simulation case in the C4D case simulation directory
 #
-def runAndSaveSimulation(settingsFile):
+def runAndSaveSimulation(settingsFile, configFileName):
 
     # this is the current c4d session we need to modify
     doc = c4d.documents.GetActiveDocument()
 
     # all settings are defined in settingsFile
     settings = simulationSetup(settingsFile, doc)
+    settings['CONFIG_NAME'] = configFileName
 
     # load in the deployer model and set it up
     des_tube_origin = setup_deployer(settings, doc)[1]
 
     # load in the all of the cubesats, position them, and prescribe their
     # motion
-    setup_cubesats(settings, des_tube_origin, doc)
+    cubeSats = setup_cubesats(settings, des_tube_origin, doc)
 
     # add the camera after the VANTAGE origin has already been set
     addCamera(settings, doc)
+
+    # saving the actual position and orientation of the CubeSats at each time
+    # step
+    saveCubeSatStates(settings, doc, cubeSats)
 
     print 'Done with loading in simulation case. Have Fun!!'
 
@@ -89,8 +98,9 @@ def simulationSetup(settingsFile, doc):
     maxTimeInC4DBaseTime = c4d.BaseTime(maxTimeInS)
     doc.SetMaxTime(maxTimeInC4DBaseTime)
 
-    # keep the max simulation time for later
+    # keep the max simulation time / frame for later
     settings['MAX_TIME'] = maxTimeInS
+    settings['MAX_FRAME'] = maxTimeInC4DBaseTime.GetFrame(doc.GetFps())
 
     print 'Done Configuring Simulation'
 
@@ -361,8 +371,7 @@ def setup_cubesats(settings, des_tube_origin, doc):
         cubesat_length = CubeSatSize * u_size + 2 * cubeSat_tab_size
 
         c4d.documents.MergeDocument(doc, fullFile, 1)
-        CubeSatObj = doc.GetActiveObject()
-        objs.append(CubeSatObj)
+        cubeSatObj = doc.GetActiveObject()
 
         # Position the z-location of the CubeSat's origin (position in the
         # length of the tube)
@@ -385,9 +394,11 @@ def setup_cubesats(settings, des_tube_origin, doc):
 
         # move cubesat to the right location and animate it's motion
         # (translation and rotation) over the duration of the simulation
-        animateCubeSat(CubeSatObj, posStart, rotStart,
-                       v, omega, cubesat_length,
-                       settings, des_tube_origin, doc)
+        cubeSatObj = animateCubeSat(cubeSatObj, posStart, rotStart,
+                                    v, omega, cubesat_length,
+                                    settings, des_tube_origin, doc)
+
+        objs.append(cubeSatObj)
 
         print 'Loaded in a ' + cubeSatSizes_strs[ii] + ' CubeSat Model'
 
@@ -421,7 +432,7 @@ def pos_rot_obj(obj, pos, rot):
 #             of the specific animation calculations - animations are applied
 #             with the deployer movement constraints in mind
 #
-# @param      CubeSatObj       The cubesat object to place and animate
+# @param      cubeSatObj       The cubesat object to place and animate
 # @param      posStart         The start location of the CubeSat's centroid
 #                              in global coords.
 #                              [cm, cm, cm]
@@ -442,10 +453,10 @@ def pos_rot_obj(obj, pos, rot):
 # @param      doc              The current C4D document to add the cubesat
 #                              animation to
 #
-# @return     CubeSatObj will have realistic animations of the desired linear
+# @return     cubeSatObj will have realistic animations of the desired linear
 #             and rotational velocities
 #
-def animateCubeSat(CubeSatObj, posStart, rotStart,
+def animateCubeSat(cubeSatObj, posStart, rotStart,
                    cubeSatLinVel, cubeSatRotVel, cubesat_length, settings,
                    des_tube_origin, doc):
     # [cm]
@@ -472,19 +483,19 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
 
     # get animation tracks for position and rotation
     obj_type_id = c4d.ID_BASEOBJECT_POSITION
-    xtrack = getXYZtrack(CubeSatObj, obj_type_id, c4d.VECTOR_X, doc)
-    ytrack = getXYZtrack(CubeSatObj, obj_type_id, c4d.VECTOR_Y, doc)
-    ztrack = getXYZtrack(CubeSatObj, obj_type_id, c4d.VECTOR_Z, doc)
+    xtrack = getXYZtrack(cubeSatObj, obj_type_id, c4d.VECTOR_X, doc)
+    ytrack = getXYZtrack(cubeSatObj, obj_type_id, c4d.VECTOR_Y, doc)
+    ztrack = getXYZtrack(cubeSatObj, obj_type_id, c4d.VECTOR_Z, doc)
 
     obj_type_id = c4d.ID_BASEOBJECT_ROTATION
-    wxtrack = getXYZtrack(CubeSatObj, obj_type_id, c4d.VECTOR_X, doc)
-    wytrack = getXYZtrack(CubeSatObj, obj_type_id, c4d.VECTOR_Y, doc)
-    wztrack = getXYZtrack(CubeSatObj, obj_type_id, c4d.VECTOR_Z, doc)
+    wxtrack = getXYZtrack(cubeSatObj, obj_type_id, c4d.VECTOR_X, doc)
+    wytrack = getXYZtrack(cubeSatObj, obj_type_id, c4d.VECTOR_Y, doc)
+    wztrack = getXYZtrack(cubeSatObj, obj_type_id, c4d.VECTOR_Z, doc)
 
     # start recording addition of animations to timeline
-    CubeSatObj.InsertTrackSorted(xtrack)
-    CubeSatObj.InsertTrackSorted(ytrack)
-    CubeSatObj.InsertTrackSorted(ztrack)
+    cubeSatObj.InsertTrackSorted(xtrack)
+    cubeSatObj.InsertTrackSorted(ytrack)
+    cubeSatObj.InsertTrackSorted(ztrack)
 
     # add position animation - linear variation of position from start to end
     # frames
@@ -500,6 +511,8 @@ def animateCubeSat(CubeSatObj, posStart, rotStart,
 
     # Goto Start
     c4d.CallCommand(12501)
+
+    return cubeSatObj
 
 
 #
@@ -572,27 +585,30 @@ def getXYZtrack(obj, trackID, channelID, doc):
 def addValueAtFrame(xtrack, ytrack, ztrack, XYFrameNum,
                     ZFrameNum, fps, valueVec):
 
+    # linear interpolation
+    animation_interpolation_val = 465001092
+
     # Add a key to each CubeSat linear position tracks
     xtrack = xtrack.GetCurve()
     xkey = xtrack.AddKey(c4d.BaseTime(XYFrameNum, fps))['key']
     xkey.SetValue(xtrack, valueVec[0])
 
     # set the track position variation to linear
-    c4d.CallCommand(465001092)
+    c4d.CallCommand(animation_interpolation_val)
 
     ytrack = ytrack.GetCurve()
     ykey = ytrack.AddKey(c4d.BaseTime(XYFrameNum, fps))['key']
     ykey.SetValue(ytrack, valueVec[1])
 
     # set the track position variation to linear
-    c4d.CallCommand(465001092)
+    c4d.CallCommand(animation_interpolation_val)
 
     ztrack = ztrack.GetCurve()
     zkey = ztrack.AddKey(c4d.BaseTime(ZFrameNum, fps))['key']
     zkey.SetValue(ztrack, valueVec[2])
 
     # set the track position variation to linear
-    c4d.CallCommand(465001092)
+    c4d.CallCommand(animation_interpolation_val)
 
 
 #
@@ -701,7 +717,105 @@ def getAnimationFrameNumbers(L, cubesat_length, posStart, max_time,
     return linVelZStartFrame, rotAndLinXYVelStartFrame, endFrame
 
 
+#
+# @brief      Saves CubeSat states (position and orientation) at each timestep
+#
+#             This data is exported in the VANTAGE cartesian frame (VCF) as
+#             defined in 13-5
+#
+# @param      settings  The settings dict from the config file
+# @param      doc       The current c4d document
+# @param      cubesats  a list of each C4D cubesat object added to the
+#                       simulation
+#
+# @return     a json file with the states of each cubesat at each timestep
+#
+def saveCubeSatStates(settings, doc, cubesats):
+
+    maxFrame = settings['MAX_FRAME']
+    fps = doc.GetFps()
+
+    cubeSatStates = []
+    frames = range(0, maxFrame + 1)
+
+    for frame in frames:
+
+        # [s]
+        currTime = frame / fps
+
+        # Define Time to find the new frame location based on the
+        # combination of the current frame, the number of frames to
+        # advance, and the fps setting of the document
+        c4dTime = c4d.BaseTime(frame, fps)
+
+        # Move the playhead to the newly referenced location in the
+        # timeline
+        doc.SetTime(c4dTime)
+        doc.ExecutePasses(None, True, True, True, 0)
+
+        cubeSatPos = {}
+        cubeSatRot = {}
+
+        for i, cubeSatObj in enumerate(cubesats):
+
+            pos = []
+            rot = []
+
+            # [cm]
+            currPos = cubeSatObj.GetAbsPos()
+            pos.append(currPos[0])
+            pos.append(currPos[1])
+            pos.append(currPos[2])
+
+            # HPB Euler Angles
+            # [rad]
+            currRot = cubeSatObj.GetAbsRot()
+            rot.append(currRot[0])
+            rot.append(currRot[1])
+            rot.append(currRot[2])
+
+            idx = str(i) + '_' + cubeSatObj.GetName()
+            cubeSatPos[idx] = pos
+            cubeSatRot[idx] = rot
+
+        # the actual output data struct should have a field for the time step,
+        # and the position / rotation vectors for each cubesat at each frame
+        cubeSatStates.append({'t': currTime,
+                              'pos': cubeSatPos,
+                              'rot': cubeSatRot})
+
+    # build the simulation case directory and write the truth data to a json
+    # file
+    configName = settings['CONFIG_NAME']
+    outFName = configName + '_truth_data.json'
+    outFPath = os.path.join('..', '4_Simulation_Cases', configName, outFName)
+
+    makeDirFromFileName(outFPath)
+
+    with open(outFPath, 'w+') as outfile:
+        json.dump(cubeSatStates, outfile)
+
+
+#
+# @brief      Safely creates a dir from a full file path.
+#
+# @param      fpath  The filepath to create
+#
+# @return     the directory containing the file in fpath should exist
+#
+def makeDirFromFileName(fpath):
+    if not os.path.exists(os.path.dirname(fpath)):
+        try:
+            os.makedirs(os.path.dirname(fpath))
+
+        # Guard against race condition
+        except OSError as exc:
+            if exc.errno != errno.EEXIST:
+                raise
+
+
 if __name__ == '__main__':
+
     # clear the screen if running as main
     print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' +
            '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' +

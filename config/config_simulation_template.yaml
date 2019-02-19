@@ -6,7 +6,7 @@ G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
 
 # number of frames per second to render the simulation video at
 # [frames/sec]
-OPTICAL_CAMERA_FPS: 30
+OPTICAL_CAMERA_FPS: 1
 
 # a list of the U sizes and ordering (1U, 2U, 3U) of CubeSats to launch
 # the CubeSats are loaded into the deployer tube like a musket
