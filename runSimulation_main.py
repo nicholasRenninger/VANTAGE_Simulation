@@ -3,6 +3,7 @@ import yaml
 import os
 import json
 import errno
+import shutil
 
 __author__ = "Nicholas Renninger, Jerry Wang"
 __copyright__ = "'Copyright' 2019, VANTAGE"
@@ -81,10 +82,12 @@ def simulationSetup(settingsFile, doc):
     with open(settingsFile, 'r') as stream:
         settings = yaml.load(stream)
 
+    settings['CONFIG_PATH'] = settingsFile
+
     # ====================================
     # set the overall simulation parameters
     # ====================================
-    fps = settings['OPTICAL_CAMERA_FPS']
+    fps = settings['TOF_FPS']
     doc.SetFps(fps)
 
     # Cinema 4D has a time class that internally stores the time values as
@@ -689,6 +692,7 @@ def getLastPosAndRot(max_time, fps, v, omega, L, posStart,
 #
 def getAnimationFrameNumbers(L, cubesat_length, posStart, max_time,
                              des_tube_origin, fps, v_z):
+
     # need to compute frame numbers for where to apply the animation starts and
     # stops for linear and rotational animations
 
@@ -741,7 +745,7 @@ def saveCubeSatStates(settings, doc, cubesats):
     for frame in frames:
 
         # [s]
-        currTime = frame / fps
+        currTime = frame / float(fps)
 
         # Define Time to find the new frame location based on the
         # combination of the current frame, the number of frames to
@@ -763,6 +767,7 @@ def saveCubeSatStates(settings, doc, cubesats):
 
             # [cm]
             currPos = cubeSatObj.GetAbsPos()
+            currPos = c4dToVCF(currPos)
             pos.append(currPos[0])
             pos.append(currPos[1])
             pos.append(currPos[2])
@@ -773,45 +778,87 @@ def saveCubeSatStates(settings, doc, cubesats):
             rot.append(currRot[0])
             rot.append(currRot[1])
             rot.append(currRot[2])
+            q = c4d.Quaternion()
+            q.SetHPB(currRot)
+            print('q: ', q)
 
-            idx = str(i) + '_' + cubeSatObj.GetName()
+            idx = 'launch_num_' + str(i) + '__' + cubeSatObj.GetName()
             cubeSatPos[idx] = pos
             cubeSatRot[idx] = rot
 
         # the actual output data struct should have a field for the time step,
-        # and the position / rotation vectors for each cubesat at each frame
+        # and the position vectors for each cubesat at each frame
         cubeSatStates.append({'t': currTime,
-                              'pos': cubeSatPos,
-                              'rot': cubeSatRot})
+                              'pos': cubeSatPos})
 
-    # build the simulation case directory and write the truth data to a json
-    # file
+    # build the simulation case directory and write the truth data and the
+    # config file to json files
+    outFPaths = []
     configName = settings['CONFIG_NAME']
+    outputDir = os.path.join('..', '4_Simulation_Cases')
+
+    configFName = configName + '.yaml'
+    newConfigOutFPath = os.path.join(outputDir, configName, configFName)
+
     outFName = configName + '_truth_data.json'
-    outFPath = os.path.join('..', '4_Simulation_Cases', configName, outFName)
+    outFPaths.append(os.path.join(outputDir, configName, outFName))
 
-    makeDirFromFileName(outFPath)
+    makeDirsFromFileNames(outFPaths)
 
-    with open(outFPath, 'w+') as outfile:
-        json.dump(cubeSatStates, outfile)
+    data = [cubeSatStates]
+
+    for (currData, outFile) in zip(data, outFPaths):
+        with open(outFile, 'w+') as outfile:
+            json.dump(currData, outfile, indent=4)
+
+    # copy the configuration file to the new output directory
+    shutil.copy(settings['CONFIG_PATH'], newConfigOutFPath)
+
+
+#
+# @brief      transforms the position data from the c4d to the VCF coordinate
+#             system
+#
+# @param      pos   The position in the c4d frame
+#                   [cm]
+#
+# @return     the position in VCF [cm]
+#
+def c4dToVCF(posInC4D):
+
+    # offset between the origins of the two frames
+    # [cm]
+    c4dOriginToVCFOrigin = [0, 0, 0]
+
+    x = posInC4D[0]
+    y = posInC4D[1]
+    z = posInC4D[2]
+
+    v1 = x + c4dOriginToVCFOrigin[0]
+    v2 = -y + c4dOriginToVCFOrigin[1]
+    v3 = z + c4dOriginToVCFOrigin[2]
+
+    return [v1, v2, v3]
 
 
 #
 # @brief      Safely creates a dir from a full file path.
 #
-# @param      fpath  The filepath to create
+# @param      fpath  A list of filepaths to create
 #
 # @return     the directory containing the file in fpath should exist
 #
-def makeDirFromFileName(fpath):
-    if not os.path.exists(os.path.dirname(fpath)):
-        try:
-            os.makedirs(os.path.dirname(fpath))
+def makeDirsFromFileNames(fpaths):
 
-        # Guard against race condition
-        except OSError as exc:
-            if exc.errno != errno.EEXIST:
-                raise
+    for fpath in fpaths:
+        if not os.path.exists(os.path.dirname(fpath)):
+            try:
+                os.makedirs(os.path.dirname(fpath))
+
+            # Guard against race condition
+            except OSError as exc:
+                if exc.errno != errno.EEXIST:
+                    raise
 
 
 if __name__ == '__main__':
