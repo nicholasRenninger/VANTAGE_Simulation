@@ -4,6 +4,7 @@ import os
 import json
 import errno
 import shutil
+import datetime
 
 __author__ = "Nicholas Renninger, Jerry Wang"
 __copyright__ = "'Copyright' 2019, VANTAGE"
@@ -16,29 +17,64 @@ __status__ = "Development"
 
 
 def main():
-    configFileName = 'config_simulation_template'
+
+    # clear all simulation objects
+    # Select All
+    c4d.CallCommand(100004766)
+    # Delete
+    c4d.CallCommand(100004787)
+    # Clear Console
+    c4d.CallCommand(13957, 13957)
+
+    (settingsFile, configFileName, configSetupFile) = getConfigFile()
+    runAndSaveSimulation(settingsFile, configFileName, configSetupFile)
+
+
+#
+# @brief      Gets the configuration file from the static file in the curr dir
+#
+# @return     The configuration filename WITH and WITHOUT the extension, and
+#             the name of the file where you set which config file to run
+#             @tuple of @str
+#
+def getConfigFile():
+
+    configSetupFile = 'currSimConfigFile'
+
+    try:
+        with open(configSetupFile, 'r') as stream:
+            configFileName = file.read(stream)
+
+    except IOError as err:
+        print 'a file named ' + configSetupFile +\
+            '\nwith the name of the desired config file\n' +\
+            'should be in the same dir as this python script\n\n'
+        raise err
+
     settingsFile = os.path.join('config',
                                 configFileName + '.yaml')
-
-    runAndSaveSimulation(settingsFile, configFileName)
+    print 'Using ' + settingsFile
+    return (settingsFile, configFileName, configSetupFile)
 
 
 #
 # @brief      Creates an entire simulation case given the parameters in the
 #             settingsFile
 #
-# @param      settingsFile    The full path to the YAML settings file
-# @param      configFileName  The configuration file name
+# @param      settingsFile     The full path to the YAML settings file
+# @param      configFileName   The configuration file name
+# @param      configSetupFile  The configuration setup file where you choose
+#                              the config file to run
 #
 # @return     a saved C4D simulation case in the C4D case simulation directory
 #
-def runAndSaveSimulation(settingsFile, configFileName):
+def runAndSaveSimulation(settingsFile, configFileName, configSetupFile):
 
     # this is the current c4d session we need to modify
     doc = c4d.documents.GetActiveDocument()
 
     # all settings are defined in settingsFile
-    settings = simulationSetup(settingsFile, doc)
+    settings = simulationSetup(settingsFile, configSetupFile, doc)
     settings['CONFIG_NAME'] = configFileName
 
     # load in the deployer model and set it up
@@ -63,24 +99,26 @@ def runAndSaveSimulation(settingsFile, configFileName):
 #             simulation settings from YAML config
 #
 #             Example settings: camera FPS, total simulation time, lighting,
-#                               etc.
+#             etc.
 #
-# @param      settingsFile  The settings YAML relative filepath
-# @param      doc           current C4D document to setup simulation in
+# @param      settingsFile     The settings YAML relative filepath
+# @param      configSetupFile  The configuration setup file where you choose
+#                              the config file to run
+# @param      doc              current C4D document to setup simulation in
 #
 # @return     Settings dict from YAML config
 #
-def simulationSetup(settingsFile, doc):
+def simulationSetup(settingsFile, configSetupFile, doc):
 
-    # clear all simulation objects
-    # Select All
-    c4d.CallCommand(100004766)
-    # Delete
-    c4d.CallCommand(100004787)
+    try:
+        # Read YAML settings file
+        with open(settingsFile, 'r') as stream:
+            settings = yaml.load(stream)
 
-    # Read YAML settings file
-    with open(settingsFile, 'r') as stream:
-        settings = yaml.load(stream)
+    except IOError as err:
+        print configSetupFile + ' likely does not point to a valid \n' +\
+            'configuration file in the ../config/ directory:\n\n'
+        raise(err)
 
     settings['CONFIG_PATH'] = settingsFile
 
@@ -762,15 +800,11 @@ def saveCubeSatStates(settings, doc, cubesats):
 
         for i, cubeSatObj in enumerate(cubesats):
 
-            pos = []
             rot = []
 
             # [cm]
             currPos = cubeSatObj.GetAbsPos()
-            currPos = c4dToVCF(currPos)
-            pos.append(currPos[0])
-            pos.append(currPos[1])
-            pos.append(currPos[2])
+            pos = c4dToVCF(currPos)
 
             # HPB Euler Angles
             # [rad]
@@ -780,7 +814,6 @@ def saveCubeSatStates(settings, doc, cubesats):
             rot.append(currRot[2])
             q = c4d.Quaternion()
             q.SetHPB(currRot)
-            print('q: ', q)
 
             idx = 'launch_num_' + str(i) + '__' + cubeSatObj.GetName()
             cubeSatPos[idx] = pos
@@ -795,13 +828,16 @@ def saveCubeSatStates(settings, doc, cubesats):
     # config file to json files
     outFPaths = []
     configName = settings['CONFIG_NAME']
+    now = datetime.datetime.now()
+    currTime = str(now.strftime('%H_%M_%S_%Y_%m_%d'))
+    caseDirName = configName + '-' + currTime
     outputDir = os.path.join('..', '4_Simulation_Cases')
 
     configFName = configName + '.yaml'
-    newConfigOutFPath = os.path.join(outputDir, configName, configFName)
+    newConfigOutFPath = os.path.join(outputDir, caseDirName, configFName)
 
     outFName = configName + '_truth_data.json'
-    outFPaths.append(os.path.join(outputDir, configName, outFName))
+    outFPaths.append(os.path.join(outputDir, caseDirName, outFName))
 
     makeDirsFromFileNames(outFPaths)
 
@@ -826,7 +862,7 @@ def saveCubeSatStates(settings, doc, cubesats):
 #
 def c4dToVCF(posInC4D):
 
-    # offset between the origins of the two frames
+    # offset between the origins of the two frames, measured from c4d to VCF
     # [cm]
     c4dOriginToVCFOrigin = [0, 0, 0]
 
@@ -834,9 +870,9 @@ def c4dToVCF(posInC4D):
     y = posInC4D[1]
     z = posInC4D[2]
 
-    v1 = x + c4dOriginToVCFOrigin[0]
-    v2 = -y + c4dOriginToVCFOrigin[1]
-    v3 = z + c4dOriginToVCFOrigin[2]
+    v1 = x - c4dOriginToVCFOrigin[0]
+    v2 = -y - c4dOriginToVCFOrigin[1]
+    v3 = z - c4dOriginToVCFOrigin[2]
 
     return [v1, v2, v3]
 
