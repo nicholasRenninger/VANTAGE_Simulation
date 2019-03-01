@@ -1,14 +1,13 @@
 import bpy
-import blensor
-import datetime
 import os
+import errno
+
 
 def main():
-    
+
     # user settings
     MAX_FRAMES = 300
-    FPS = 20
-    outputCase = 'config_simulation_template_2_25_Josh_ToF_Calibration-17_37_20_2019_02_25'
+    outputCase = 'config_simulation_template_2_25_Josh_ToF_Calibration_tube1-23_02_54_2019_02_28'
     SIMULATION_DIR = 'D:\\Google Drive\\School\\VANTAGE\\13 Simulation'
 
     MM_2_M = 0.001
@@ -19,23 +18,23 @@ def main():
     # for example by bpy.data.objects["Camera"]
     scanner = bpy.data.objects["Camera"]
     scanner.select = True
-    
+
     # remove it
     bpy.ops.object.delete()
     scanner = []
-    
+
     # need to add a new camera for it to actually work ... idk
     bpy.ops.object.camera_add(view_align=True, enter_editmode=False,
-                                        location=(0, 0, 0),
-                                        rotation=(1.57079632679, 0, 0),
-                                        layers=(True, False, False, False,
-                                                False, False, False, False,
-                                                False, False, False, False,
-                                                False, False, False, False,
-                                                False, False, False, False))
+                              location=(0, 0, 0),
+                              rotation=(1.57079632679, 0, 0),
+                              layers=(True, False, False, False,
+                                      False, False, False, False,
+                                      False, False, False, False,
+                                      False, False, False, False,
+                                      False, False, False, False))
     scanner = bpy.data.objects["Camera"]
     bpy.context.object.scan_type = 'tof'
-    
+
     # set the current object as the camera
     bpy.context.scene.camera = scanner
 
@@ -91,8 +90,9 @@ def main():
 
     # use the local sensor coordinate system
     # o/w use the Blensor global coordinate system
-    # THIS IS IMPORTANT AF - this needs to be true for the data to be exported to
-    # TCF
+    #
+    # THIS IS IMPORTANT AF - this needs to be true for the data to be exported
+    # to TCF
     bpy.context.object.local_coordinates = True
 
     # allow light bounces based on surface reflectivity
@@ -107,7 +107,9 @@ def main():
 
     # use these to control the output coordinate system relative to the ToF /
     # global coordinate system selection
-    # FALSE, TRUE, TRUE will yield nominally yield TCF if using sensor coordinates
+    #
+    # FALSE, TRUE, TRUE will yield nominally yield TCF if using sensor
+    # coordinates
     bpy.context.object.inv_scan_x = False
     bpy.context.object.inv_scan_y = True
     bpy.context.object.inv_scan_z = True
@@ -118,8 +120,6 @@ def main():
 
     # build the simulation case directory and write the truth data and the
     # config file to json files
-    outFPaths = []
-    now = datetime.datetime.now()
     outputDir = os.path.join(SIMULATION_DIR, '4_Simulation_Cases')
     tofDataPath = os.path.join(outputDir, outputCase, 'ToF_Data')
     outFName = os.path.join(tofDataPath, outputCase + '.pcd')
@@ -150,7 +150,6 @@ def makeDirsFromFileNames(fpaths):
             except OSError as exc:
                 if exc.errno != errno.EEXIST:
                     raise
-
 
 
 if __name__ == '__main__':
