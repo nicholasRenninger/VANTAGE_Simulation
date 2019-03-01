@@ -91,11 +91,19 @@ def runAndSaveSimulation(settingsFile, configFileName, configSetupFile):
     # step
     saveCubeSatStates(settings, doc, cubeSats)
 
+    # save current path to restore after saving files this is done to allow you
+    # to re-run script quickly without having to manually set the scripting dir
+    # path
+    curr_path = os.getcwd()
+
     # Save C4D file
     c4d.CallCommand(12218, 12218)
 
     # Export as fbx
     c4d.CallCommand(60000, 10)
+
+    # go back to the old path
+    os.chdir(curr_path)
 
     print 'Done with loading in simulation case. Have Fun!!'
 
