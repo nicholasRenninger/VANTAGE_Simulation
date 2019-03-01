@@ -817,6 +817,14 @@ def saveCubeSatStates(settings, doc, cubesats):
         # Move the playhead to the newly referenced location in the
         # timeline
         doc.SetTime(c4dTime)
+
+        # DO NOT FUCKING TOUCH THIS - this command is like the super version of
+        # c4d.EventAdd() and the timeline won't move unless you put this
+        # command here
+        #
+        # Thank god for this explanation:
+        # https://www.youtube.com/watch?v=dQw4w9WgXcQ
+        # (https://www.c4dcafe.com/ipb/forums/topic/95496-zoetrope-with-python-script/)
         doc.ExecutePasses(None, True, True, True, 0)
 
         cubeSatPos = {}
@@ -927,10 +935,5 @@ def makeDirsFromFileNames(fpaths):
 
 if __name__ == '__main__':
 
-    # clear the screen if running as main
-    print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' +
-           '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' +
-           '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' +
-           '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
     main()
     c4d.EventAdd()
