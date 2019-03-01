@@ -178,7 +178,7 @@ def addCamera(settings, doc):
     camera()[c4d.CAMERA_FOCUS] = foc_length
     camera()[c4d.CAMERAOBJECT_APERTURE] = Ape
     camera()[c4d.CAMERAOBJECT_SHUTTER_SPEED_VALUE] = shutterSpeed
-    camera()[c4d.CAMERAOBJECT_FNUMBER_VALUE] = F_STOP
+    camera()[c4d.CAMERAOBJECT_FNUMBER_VALUE] = fStop
 
     # setting camera location and orientation relative to the VANTAGE frame
     camera()[c4d.ID_BASEOBJECT_REL_POSITION, c4d.VECTOR_X] = cameraloc[0]

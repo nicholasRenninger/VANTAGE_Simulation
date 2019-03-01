@@ -23,7 +23,7 @@ CUBESATS_SIZES:
   # the above CubeSat one leaves first (front cubesat)
 
 # Select the deployment tube you would like to launch from
-DESIRED_DEPLOYMENT_TUBE: 1
+DESIRED_DEPLOYMENT_TUBE: 2
 
 # a list of the Cartesian CubeSats spacings between each CubeSat in the
 # deployment simulation.
