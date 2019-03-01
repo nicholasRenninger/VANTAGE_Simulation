@@ -219,16 +219,17 @@ CAMERA_ROT:
 
 # camera focus and rendering setting
 # Focal length in [mm]
-# Aperture [mm]
-# Horizontal FOV [mm]
-# Vertical FOV [mm]
+# Aperture [mm] - this is the physical sensor diameter
+#                 (for a rectangular sensor)
 # X_res [Pixel]
 # y_res [Pixel]
 # Focus position (where you actual focus) [mm]
+# shutter speed [s]
+# f/F_STOP - the fstop of your lens [1]
 FOCAL_LENGTH: 35
-APERTURE: 8.92796
-H_FOV: 0.927
-V_FOV: 0.548
+APERTURE: 7.41
 X_Res: 3088
 Y_Res: 2076
 Focus: 2000
+SHUTTER_SPEED: 0.017
+F_STOP: 10

@@ -166,19 +166,19 @@ def addCamera(settings, doc):
 
     foc_length = settings['FOCAL_LENGTH']
     Ape = settings['APERTURE']
-    fovH = settings['H_FOV']
-    fovV = settings['V_FOV']
+    shutterSpeed = settings['SHUTTER_SPEED']
     xres = settings['X_Res']
     yres = settings['Y_Res']
     fps = settings['OPTICAL_CAMERA_FPS']
     cameraloc = settings['CAMERA_LOC']
     camerarot = settings['CAMERA_ROT']
+    fStop = settings['F_STOP']
 
     # setting camera properties
     camera()[c4d.CAMERA_FOCUS] = foc_length
     camera()[c4d.CAMERAOBJECT_APERTURE] = Ape
-    camera()[c4d.CAMERAOBJECT_FOV] = fovH
-    camera()[c4d.CAMERAOBJECT_FOV_VERTICAL] = fovV
+    camera()[c4d.CAMERAOBJECT_SHUTTER_SPEED_VALUE] = shutterSpeed
+    camera()[c4d.CAMERAOBJECT_FNUMBER_VALUE] = F_STOP
 
     # setting camera location and orientation relative to the VANTAGE frame
     camera()[c4d.ID_BASEOBJECT_REL_POSITION, c4d.VECTOR_X] = cameraloc[0]
@@ -212,7 +212,7 @@ def addCamera(settings, doc):
     # that it doesn't immediately switch. Thus, we toggle back to ProRender,
     # back to Physical, and again back to ProRender to hopefully switch to the
     # ProRender engine.
-    # 
+    #
     # NOT CURRENTLY WORKING in C4D R20.028.
     rdata[c4d.RDATA_RENDERENGINE] = 1037639
     rdata[c4d.RDATA_RENDERENGINE] = 0
