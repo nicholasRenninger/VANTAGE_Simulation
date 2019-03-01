@@ -91,6 +91,12 @@ def runAndSaveSimulation(settingsFile, configFileName, configSetupFile):
     # step
     saveCubeSatStates(settings, doc, cubeSats)
 
+    # Save C4D file
+    c4d.CallCommand(12218, 12218)
+
+    # Export as fbx
+    c4d.CallCommand(60000, 10)
+
     print 'Done with loading in simulation case. Have Fun!!'
 
 
@@ -848,6 +854,10 @@ def saveCubeSatStates(settings, doc, cubesats):
 
     outFName = configName + '_truth_data.json'
     outFPaths.append(os.path.join(outputDir, caseDirName, outFName))
+
+    # make TOF and Optical data directories for saving data
+    os.makedirs(os.path.join(outputDir, caseDirName, 'ToF_Data'))
+    os.makedirs(os.path.join(outputDir, caseDirName, 'Optical_Data'))
 
     makeDirsFromFileNames(outFPaths)
 
