@@ -1,8 +1,8 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-# G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
-G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
+G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
+# G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to run the simulation at -> this is what the fps
 # the ToF data will be at
@@ -23,7 +23,7 @@ CUBESATS_SIZES:
   # the above CubeSat one leaves first (front cubesat)
 
 # Select the deployment tube you would like to launch from
-DESIRED_DEPLOYMENT_TUBE: 1
+DESIRED_DEPLOYMENT_TUBE: 3
 
 # a list of the Cartesian CubeSats spacings between each CubeSat in the
 # deployment simulation.
