@@ -193,8 +193,8 @@ def addCamera(settings, doc):
     rdata[c4d.RDATA_YRES] = yres
     rdata[c4d.RDATA_FRAMERATE] = fps
 
-    # turn on physics rendering engine
-    rdata[c4d.RDATA_RENDERENGINE] = 1037639
+    # turn on physics rendering engine to set the majority of the parameters
+    rdata[c4d.RDATA_RENDERENGINE] = 0
 
     # changing to MP4 output
     rdata[c4d.RDATA_FORMAT] = 1125
@@ -202,11 +202,21 @@ def addCamera(settings, doc):
     # changing to rendering the full frame
     rdata[c4d.RDATA_FRAMESEQUENCE] = 2
 
-    # insert hte configured camera object
+    # insert the configured camera object
     doc.InsertObject(camera)
 
     # changing the current render viewpoint to the inserted camera
     c4d.CallCommand(55000, 2)
+
+    # need to swap to the ProRender engine, but C4D has a bug that makes it so
+    # that it doesn't immediately switch. Thus, we toggle back to ProRender,
+    # back to Physical, and again back to ProRender to hopefully switch to the
+    # ProRender engine.
+    # 
+    # NOT CURRENTLY WORKING in C4D R20.028.
+    rdata[c4d.RDATA_RENDERENGINE] = 1037639
+    rdata[c4d.RDATA_RENDERENGINE] = 0
+    rdata[c4d.RDATA_RENDERENGINE] = 1037639
 
 
 #
