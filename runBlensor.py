@@ -43,7 +43,7 @@ def main():
     # vector from the origin of TCF to the origin of VCF, expressed in blensor
     # coords
     # [mm]
-    TCFToVCF = (-49.758, 11.9, -22.0)
+    TCFToVCF = (-49.758, -11.9, -22.0)
     scanner.location = tuple(-i * MM_2_M for i in TCFToVCF)
 
     # rotate the camera to face the right way
