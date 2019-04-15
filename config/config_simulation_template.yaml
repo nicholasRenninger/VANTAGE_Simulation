@@ -7,11 +7,11 @@ G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
 # number of frames per second to run the simulation at -> this is what the fps
 # the ToF data will be at
 # [frames/sec]
-TOF_FPS: 30
+TOF_FPS: 10
 
 # number of frames per second to run the render camera images at
 # [frames/sec]
-OPTICAL_CAMERA_FPS: 1
+OPTICAL_CAMERA_FPS: 2
 
 # a list of the U sizes and ordering (1U, 2U, 3U) of CubeSats to launch
 # the CubeSats are loaded into the deployer tube like a musket
@@ -218,6 +218,10 @@ CAMERA_ROT:
   - 0
 
 # camera focus and rendering setting
+#
+# H FOV was measured to be 13.55deg.
+# These settings correspond to the manufacturer's film gate size and this HFOV
+#
 # Focal length in [mm]
 # Aperture [mm] - this is the physical sensor diameter
 #                 (for a rectangular sensor)
@@ -226,10 +230,10 @@ CAMERA_ROT:
 # Focus position (where you actual focus) [mm]
 # shutter speed [s]
 # f/F_STOP - the fstop of your lens [1]
-FOCAL_LENGTH: 35
+FOCAL_LENGTH: 31.187
 APERTURE: 7.41
 X_Res: 3088
 Y_Res: 2076
 Focus: 2000
 SHUTTER_SPEED: 0.017
-F_STOP: 10
+F_STOP: 5
