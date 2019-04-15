@@ -6,9 +6,9 @@ import errno
 def main():
 
     # user settings
-    MAX_FRAMES = 300
+    MAX_FRAMES = 130
     outputCase = 'config_simulation_template_2_25_Josh_ToF_Calibration_tube1-23_02_54_2019_02_28'
-    SIMULATION_DIR = 'D:\\Google Drive\\School\\VANTAGE\\13 Simulation'
+    SIMULATION_DIR = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
 
     MM_2_M = 0.001
 
@@ -59,8 +59,8 @@ def main():
 
     # H by V FOV
     # [deg]
-    bpy.context.object.tof_lens_angle_w = 40
-    bpy.context.object.tof_lens_angle_h = 30
+    bpy.context.object.tof_lens_angle_w = 59
+    bpy.context.object.tof_lens_angle_h = 44
 
     # maximum scan distance
     # [m]
@@ -72,8 +72,8 @@ def main():
 
     # noise parameters
     # who fucking knows what these mean
-    bpy.context.object.tof_noise_mu = 0.01
-    bpy.context.object.tof_noise_sigma = 0.02
+    bpy.context.object.tof_noise_mu = 0.00
+    bpy.context.object.tof_noise_sigma = 0.01
 
     # physical phenoma modeling
     # backfolding can cause objects to appear closer than they actually are
