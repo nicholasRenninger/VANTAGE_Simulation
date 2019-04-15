@@ -35,12 +35,12 @@ DESIRED_DEPLOYMENT_TUBE: 3
 #
 # [cm]
 CUBESAT_SEPARATIONS:
-  - 3
-  - 3
-  - 3
-  - 3
-  - 3
-  - 3
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
+  - 4
 
 # a list of the Cartesian CubeSats linear velocities for each CubeSat in the
 # simulation.
