@@ -210,8 +210,8 @@ def addCamera(settings, doc):
     # turn on physics rendering engine to set the majority of the parameters
     rdata[c4d.RDATA_RENDERENGINE] = 0
 
-    # changing to MP4 output
-    rdata[c4d.RDATA_FORMAT] = 1125
+    # changing to PNG sequence output
+    rdata[c4d.RDATA_FORMAT] = 1023671
 
     # changing to rendering the full frame
     rdata[c4d.RDATA_FRAMESEQUENCE] = 2
@@ -253,7 +253,8 @@ def setup_deployer(settings, doc):
     fullFile = os.path.join(gDrive, dep)
 
     # Import Deployer model
-    c4d.documents.MergeDocument(doc, fullFile, 1)
+    c4d.documents.MergeDocument(doc, fullFile, c4d.SCENEFILTER_OBJECTS |
+                                c4d.SCENEFILTER_MATERIALS)
     deployerObj = doc.GetActiveObject()
 
     # Position and Rotate the Deployer so the global origin is at VANTAGE's
