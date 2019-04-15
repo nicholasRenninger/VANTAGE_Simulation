@@ -243,10 +243,10 @@ CAMERA_ROT:
 # Focus position (where you actual focus) [mm]
 # shutter speed [s]
 # f/F_STOP - the fstop of your lens [1]
-FOCAL_LENGTH: 35
+FOCAL_LENGTH: 31.187
 APERTURE: 7.41
 X_Res: 3088
 Y_Res: 2076
 Focus: 2000
 SHUTTER_SPEED: 0.017
-F_STOP: 10
+F_STOP: 5

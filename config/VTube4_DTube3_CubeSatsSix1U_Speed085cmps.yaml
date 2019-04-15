@@ -1,7 +1,7 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-G_DRIVE_PATH: 'D:\Google Drive\School\Undergrad\VANTAGE'  # Nick
+G_DRIVE_PATH: 'D:\Google Drive\Undergrad\VANTAGE\'  # Nick
 # G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to run the simulation at -> this is what the fps
@@ -243,10 +243,10 @@ CAMERA_ROT:
 # Focus position (where you actual focus) [mm]
 # shutter speed [s]
 # f/F_STOP - the fstop of your lens [1]
-FOCAL_LENGTH: 35
+FOCAL_LENGTH: 31.187
 APERTURE: 7.41
 X_Res: 3088
 Y_Res: 2076
 Focus: 2000
 SHUTTER_SPEED: 0.017
-F_STOP: 10
+F_STOP: 5
