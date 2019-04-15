@@ -1,7 +1,7 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
+G_DRIVE_PATH: 'D:\Google Drive\Undergrad\VANTAGE'  # Nick
 # G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to run the simulation at -> this is what the fps
@@ -75,26 +75,26 @@ CUBESAT_LIN_VELS:
 # [rad/s]
 CUBESAT_ROT_VELS:
   omega_x:
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
+    - 0.01309
+    - 0.02618
+    - 0.01
+    - 0.005
+    - 0.0
+    - 0.01
   omega_y:
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
+    - 0.01309
+    - 0.02618
+    - 0.01
+    - 0.0
+    - 0.02
+    - 0.001
   omega_z:
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
-    - 0.05236
+    - 0.01309
+    - 0.02618
+    - 0.01
+    - 0.005
+    - 0.02
+    - 0.011
 
 ###############################################################################
 ### END of settings you should need to edit

@@ -1,7 +1,7 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
+G_DRIVE_PATH: 'D:\Google Drive\Undergrad\VANTAGE'  # Nick
 # G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to run the simulation at -> this is what the fps
@@ -32,9 +32,9 @@ DESIRED_DEPLOYMENT_TUBE: 3
 #
 # [cm]
 CUBESAT_SEPARATIONS:
-  - 3
-  - 3
-  - 3
+  - 4
+  - 4
+  - 4
 
 # a list of the Cartesian CubeSats linear velocities for each CubeSat in the
 # simulation.
