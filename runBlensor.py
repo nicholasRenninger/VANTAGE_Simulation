@@ -12,7 +12,7 @@ __email__ = "nicholas.renninger@colorado.edu"
 __status__ = "Development"
 
 
-def main():
+def configureRunSaveBlensorScanRange():
 
     veryImportantFunction()
 
@@ -38,7 +38,7 @@ def main():
     #
     # Change this number to easily create new folders containing successive
     # scans of the same case
-    caseNum = 2
+    caseNum = 3
     outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed085cmps-04_14_48_2019_04_15'
 
     # sensor Gaussian process noise
@@ -48,7 +48,7 @@ def main():
     noise_mu = 0
 
     # nominal value: [0.01 - 0.02]
-    noise_sigma = 0.015
+    noise_sigma = 0.011
 
     # Nick Workstation simulation drive path
     SIMULATION_DIR = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
@@ -183,12 +183,6 @@ def main():
     print('Simulation finished with output to:\n', tofDataPath)
     print('-------------------------------------------------------------')
 
-    # clean the output dir of non-noisy pcd files
-    cleanOutputDir(tofDataPath)
-
-    # clear the old scan data to keep blensor congested
-    bpy.ops.blensor.delete_scans()
-
 
 #
 # @brief      Safely creates a dir from a full file path.
@@ -224,23 +218,6 @@ def veryImportantFunction():
     print('\n=================================')
 
 
-#
-# @brief      removes all non-noisy pcd output files
-#
-# @param      outputDir  The output directory to clean
-#
-# @return     outputDir now only contains noisy output pcd files
-#
-def cleanOutputDir(outputDir):
-
-    # i know this is shit don't judge me I'm just an engineer
-    for (dirpath, dirnames, filenames) in os.walk(outputDir):
-        for filename in filenames:
-            if 'noisy' not in filename:
-
-                pathToUnwantedFile = os.path.join(dirpath, filename)
-                os.remove(pathToUnwantedFile)
-
-
 if __name__ == '__main__':
-    main()
+
+    configureRunSaveBlensorScanRange()
