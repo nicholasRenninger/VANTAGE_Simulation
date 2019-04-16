@@ -38,8 +38,17 @@ def main():
     #
     # Change this number to easily create new folders containing successive
     # scans of the same case
-    caseNum = 1
+    caseNum = 2
     outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed085cmps-04_14_48_2019_04_15'
+
+    # sensor Gaussian process noise
+    # adjust these to make the ToF returns look more like real sensor data
+
+    # nominal value: 0
+    noise_mu = 0
+
+    # nominal value: [0.01 - 0.02]
+    noise_sigma = 0.015
 
     # Nick Workstation simulation drive path
     SIMULATION_DIR = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
@@ -109,8 +118,8 @@ def main():
 
     # noise parameters
     # who fucking knows what these mean
-    bpy.context.object.tof_noise_mu = 0.00
-    bpy.context.object.tof_noise_sigma = 0.01
+    bpy.context.object.tof_noise_mu = noise_mu
+    bpy.context.object.tof_noise_sigma = noise_sigma
 
     # physical phenomena modeling
     # backfolding can cause objects to appear closer than they actually are
