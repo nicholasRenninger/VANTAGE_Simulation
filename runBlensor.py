@@ -2,13 +2,50 @@ import bpy
 import os
 import errno
 
+__author__ = "Nicholas Renninger"
+__copyright__ = "'Copyright' 2019, VANTAGE"
+__credits__ = ["Long Song Silver"]
+__license__ = "MIT"
+__version__ = "0.0.1"
+__maintainer__ = "Nicholas Renninger"
+__email__ = "nicholas.renninger@colorado.edu"
+__status__ = "Development"
+
 
 def main():
 
+    veryImportantFunction()
+
+    ###############
     # user settings
+    ###############
+
+    # run scans from frame 1 to MAX_FRAMES
     MAX_FRAMES = 130
-    outputCase = 'config_simulation_template_2_25_Josh_ToF_Calibration_tube1-23_02_54_2019_02_28'
-    SIMULATION_DIR = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
+
+    # because blensor uses a dispatch architecture with no easy observer
+    # pattern implementation, you can't programmatically know when a scan is
+    # done. Thus, to run multiple scans for the same file, you must run this
+    # script each time you wish to create a new "sample" (new set of ToF data -
+    # there is random noise in each simulation) of the current simulation
+    # case.
+    #
+    # Changing this number changes X in the 'SampleX' directory within the
+    # current case's ToF Data folder. e.g. caseNum = 4 will create a folder in
+    # the outputCase directory:
+    # PATH_TO_SIMULATION_DIR/4_Simulation_Cases/$outputCase/ToF_Data/$caseNum
+    # with all of the pcd files for the scan
+    #
+    # Change this number to easily create new folders containing successive
+    # scans of the same case
+    caseNum = 1
+    outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed085cmps-04_14_48_2019_04_15'
+
+    # Nick Workstation simulation drive path
+    SIMULATION_DIR = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
+
+    # Nick LT drive simulation drive path
+    # SIMULATION_DIR = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
 
     MM_2_M = 0.001
 
@@ -75,7 +112,7 @@ def main():
     bpy.context.object.tof_noise_mu = 0.00
     bpy.context.object.tof_noise_sigma = 0.01
 
-    # physical phenoma modeling
+    # physical phenomena modeling
     # backfolding can cause objects to appear closer than they actually are
     bpy.context.object.tof_backfolding = True
 
@@ -98,7 +135,7 @@ def main():
     # allow light bounces based on surface reflectivity
     bpy.context.object.ref_enabled = True
 
-    # should the PC be visiable only in the frame it was taken
+    # should the PC be visible only in the frame it was taken
     # gui option used to better visualize the objects
     bpy.context.object.show_in_frame = True
 
@@ -121,15 +158,27 @@ def main():
     # build the simulation case directory and write the truth data and the
     # config file to json files
     outputDir = os.path.join(SIMULATION_DIR, '4_Simulation_Cases')
-    tofDataPath = os.path.join(outputDir, outputCase, 'ToF_Data')
+
+    # create directory for each time the "sample" case is run
+    tofDataPath = os.path.join(outputDir, outputCase, 'ToF_Data',
+                               'Sample' + str(caseNum))
     outFName = os.path.join(tofDataPath, outputCase + '.pcd')
 
-    outDirs = [outFName]
+    makeDirsFromFileNames([outFName])
 
-    makeDirsFromFileNames(outDirs)
-
-    print(outDirs)
+    # simulates pushing the 'scan range' button in the Blensor sensor GUI
+    # to ensure everything is set properly
+    print('-------------------------------------------------------------')
+    print('Running Simulation Number ', caseNum)
     bpy.ops.blensor.scanrange_handler(filepath=outFName)
+    print('Simulation finished with output to:\n', tofDataPath)
+    print('-------------------------------------------------------------')
+
+    # clean the output dir of non-noisy pcd files
+    cleanOutputDir(tofDataPath)
+
+    # clear the old scan data to keep blensor congested
+    bpy.ops.blensor.delete_scans()
 
 
 #
@@ -150,6 +199,38 @@ def makeDirsFromFileNames(fpaths):
             except OSError as exc:
                 if exc.errno != errno.EEXIST:
                     raise
+
+
+#
+# @brief      does all of the things
+#
+# @return     never change this or we'll all die
+#
+def veryImportantFunction():
+
+    # super important NEVER CHANGE THIS it will break all of the coding and
+    # algorithms
+    print('\n\n\n\n\n\n\n\n\n=================================')
+    print('\nSwaqeroni mAceroni')
+    print('\n=================================')
+
+
+#
+# @brief      removes all non-noisy pcd output files
+#
+# @param      outputDir  The output directory to clean
+#
+# @return     outputDir now only contains noisy output pcd files
+#
+def cleanOutputDir(outputDir):
+
+    # i know this is shit don't judge me I'm just an engineer
+    for (dirpath, dirnames, filenames) in os.walk(outputDir):
+        for filename in filenames:
+            if 'noisy' not in filename:
+
+                pathToUnwantedFile = os.path.join(dirpath, filename)
+                os.remove(pathToUnwantedFile)
 
 
 if __name__ == '__main__':
