@@ -34,6 +34,10 @@ def cleanOutputDir(outputDir):
 
 if __name__ == '__main__':
 
-    outputDir = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation\\4_Simulation_Cases'
+    # Nick LT simulation case drive path
+    # outputDir = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation\\4_Simulation_Cases'
+
+    # Nick Workstation simulation case drive path
+    outputDir = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation\\4_Simulation_Cases'
 
     cleanOutputDir(outputDir)
