@@ -25,21 +25,24 @@ def configureRunSaveBlensorScanRange():
 
     # because blensor uses a dispatch architecture with no easy observer
     # pattern implementation, you can't programmatically know when a scan is
-    # done. Thus, to run multiple scans for the same file, you must run this
-    # script each time you wish to create a new "sample" (new set of ToF data -
-    # there is random noise in each simulation) of the current simulation
-    # case.
+    # done. Thus, to run multiple scans for the same file, you run this script
+    # with a number of times to dispatch the scanner
     #
-    # Changing this number changes X in the 'SampleX' directory within the
-    # current case's ToF Data folder. e.g. caseNum = 4 will create a folder in
-    # the outputCase directory:
-    # PATH_TO_SIMULATION_DIR/4_Simulation_Cases/$outputCase/ToF_Data/$caseNum
-    # with all of the pcd files for the scan
+    # Changing NUM_SIMS_TO_RUN changes the maximum value of X in the 'SampleX'
+    # directory within the current case's ToF Data folder.
+    #
+    # e.g. NUM_SIMS_TO_RUN = 4 will create the following folders in the
+    # outputCase directory:
+    # PATH_TO_SIMULATION_DIR/4_Simulation_Cases/$outputCase/ToF_Data/Sample1
+    # PATH_TO_SIMULATION_DIR/4_Simulation_Cases/$outputCase/ToF_Data/Sample2
+    # PATH_TO_SIMULATION_DIR/4_Simulation_Cases/$outputCase/ToF_Data/Sample3
+    # PATH_TO_SIMULATION_DIR/4_Simulation_Cases/$outputCase/ToF_Data/Sample4
+    # with all of the pcd files for each scan in each "sample" dir
     #
     # Change this number to easily create new folders containing successive
     # scans of the same case
-    caseNum = 3
-    outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed085cmps-04_14_48_2019_04_15'
+    NUM_SIMS_TO_RUN = 10
+    outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed140cmps-04_16_47_2019_04_15'
 
     # sensor Gaussian process noise
     # adjust these to make the ToF returns look more like real sensor data
@@ -48,7 +51,7 @@ def configureRunSaveBlensorScanRange():
     noise_mu = 0
 
     # nominal value: [0.01 - 0.02]
-    noise_sigma = 0.011
+    noise_sigma = 0.01
 
     # Nick Workstation simulation drive path
     SIMULATION_DIR = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
@@ -168,20 +171,22 @@ def configureRunSaveBlensorScanRange():
     # config file to json files
     outputDir = os.path.join(SIMULATION_DIR, '4_Simulation_Cases')
 
-    # create directory for each time the "sample" case is run
-    tofDataPath = os.path.join(outputDir, outputCase, 'ToF_Data',
-                               'Sample' + str(caseNum))
-    outFName = os.path.join(tofDataPath, outputCase + '.pcd')
+    for caseNum in range(1, NUM_SIMS_TO_RUN + 1):
 
-    makeDirsFromFileNames([outFName])
+        # create directory for each time the "sample" case is run
+        tofDataPath = os.path.join(outputDir, outputCase, 'ToF_Data',
+                                   'Sample' + str(caseNum))
+        outFName = os.path.join(tofDataPath, outputCase + '.pcd')
 
-    # simulates pushing the 'scan range' button in the Blensor sensor GUI
-    # to ensure everything is set properly
-    print('-------------------------------------------------------------')
-    print('Running Simulation Number ', caseNum)
-    bpy.ops.blensor.scanrange_handler(filepath=outFName)
-    print('Simulation finished with output to:\n', tofDataPath)
-    print('-------------------------------------------------------------')
+        makeDirsFromFileNames([outFName])
+
+        # simulates pushing the 'scan range' button in the Blensor sensor GUI
+        # to ensure everything is set properly
+        print('-------------------------------------------------------------')
+        print('Running Simulation Number ', caseNum)
+        bpy.ops.blensor.scanrange_handler(filepath=outFName)
+        print('Simulation finished with output to:\n', tofDataPath)
+        print('-------------------------------------------------------------')
 
 
 #
