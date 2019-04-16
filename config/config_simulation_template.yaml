@@ -4,12 +4,14 @@
 G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
 # G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
-# number of frames per second to run the simulation at -> this is what the fps
-# the ToF data will be at
+# number of frames per second to run for the simulation
+# this also corresponds to the output rate the ToF camera
+# ToF camera data capture rate
 # [frames/sec]
 TOF_FPS: 10
 
-# number of frames per second to run the render camera images at
+# number of frames per second for rendering monochrome camera images
+# monochrome camera data capture rate
 # [frames/sec]
 OPTICAL_CAMERA_FPS: 2
 
