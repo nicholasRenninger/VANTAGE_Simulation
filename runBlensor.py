@@ -20,8 +20,12 @@ def configureRunSaveBlensorScanRange():
     # user settings
     ###############
 
+    # ability to turn off scanning if you just want to verify the output
+    # directory structure before running simulation batch
+    SHOULD_RUN_SCANS = True
+
     # run scans from frame 1 to MAX_FRAMES
-    MAX_FRAMES = 130
+    MAX_FRAMES = 45
 
     # because blensor uses a dispatch architecture with no easy observer
     # pattern implementation, you can't programmatically know when a scan is
@@ -42,7 +46,8 @@ def configureRunSaveBlensorScanRange():
     # Change this number to easily create new folders containing successive
     # scans of the same case
     NUM_SIMS_TO_RUN = 10
-    outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed140cmps-04_16_47_2019_04_15'
+    START_SAMPLE_NUM = 1
+    outputCase = 'VTube4_DTube3_CubeSatsSix1U_Speed250cmps-16_15_59_2019_04_15'
 
     # sensor Gaussian process noise
     # adjust these to make the ToF returns look more like real sensor data
@@ -171,12 +176,14 @@ def configureRunSaveBlensorScanRange():
     # config file to json files
     outputDir = os.path.join(SIMULATION_DIR, '4_Simulation_Cases')
 
-    for caseNum in range(1, NUM_SIMS_TO_RUN + 1):
+    for caseNum in range(START_SAMPLE_NUM, NUM_SIMS_TO_RUN + 1):
 
         # create directory for each time the "sample" case is run
+        sampleStr = 'Sample' + str(caseNum)
         tofDataPath = os.path.join(outputDir, outputCase, 'ToF_Data',
-                                   'Sample' + str(caseNum))
-        outFName = os.path.join(tofDataPath, outputCase + '.pcd')
+                                   sampleStr)
+        outFName = os.path.join(tofDataPath, sampleStr + '_' +
+                                outputCase + '.pcd')
 
         makeDirsFromFileNames([outFName])
 
@@ -184,7 +191,8 @@ def configureRunSaveBlensorScanRange():
         # to ensure everything is set properly
         print('-------------------------------------------------------------')
         print('Running Simulation Number ', caseNum)
-        bpy.ops.blensor.scanrange_handler(filepath=outFName)
+        if SHOULD_RUN_SCANS:
+            bpy.ops.blensor.scanrange_handler(filepath=outFName)
         print('Simulation finished with output to:\n', tofDataPath)
         print('-------------------------------------------------------------')
 
