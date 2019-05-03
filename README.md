@@ -3,7 +3,7 @@
 
 A YAML-powered Python project to interface with C4D / Blensor to simulate the deployment of CubeSats from a NanoRacks ISS deployer.
 
-**This repository is the home for the VANTAGE Simulation project**
+**This repository is the home for the VANTAGE Simulation project, which is a component of the larger [VANTAGE (2018-19) project](https://drive.google.com/drive/folders/1SbkY5wjO9he67aB8XnaSnfTiQf65CChv?usp=sharing) at CU Boulder**
 
 ---
 ## About this Repo
@@ -25,6 +25,7 @@ The important directories contained in this repo are:
 
 The following directory structure shows the directory structure if you run the full simulation framework with a configuration file named: `configName = SPS_template.yaml`. The `runC4D.py` code will automatically build a "case" directory from this config file, named with the following convention `configName + '-' + '%H_%M_%S_%Y_%m_%d'`.
 
+```bash
 .
 ├── **4_Simulation_Cases**
 │   ├── ...
@@ -84,6 +85,7 @@ The following directory structure shows the directory structure if you run the f
     ├── README.md
     ├── runBlensor.py
     └── runC4D.py
+```
 
 The simulation automatically builds structured output directories to `4_Simulation_Cases`.
 
@@ -109,9 +111,11 @@ We have heavily scripted the creation of a C4D simulation case. Currently, the e
 
     - The Optical / ToF camera parameters
 
-    - the motion of each individual CubeSat (linear and rotational velocities of each CubeSat centroid) - WARNING: we do not currently check for collision, so make sure you don't prescribe motion that will cause the CubeSats collide
+    - the motion of each individual CubeSat (linear and rotational velocities of each CubeSat centroid)
 
-The description of what each parameter is should be evident in the location you set it, whether it be in the YAML config, or in the source itself.
+**WARNING**: we do not currently check for collision, so make sure you don't prescribe motion that will cause the CubeSats collide
+
+*The description of what each parameter is should be evident in the location you set it, whether it be in the YAML config, or in the source itself.*
 
 ---
 ## How to Set the Simulation Parameters
@@ -145,11 +149,11 @@ Edit the config file variables as you see fit to create the correct C4D case. Ma
 
 7) A window will pop up asking you to save the c4d file. Navigate to the "case" directory (see the directory structure section for more details) created for the config file you typed in `currSimConfigFile`.
 
-7)a) At this point you get to name the .c4d file. **Recommended file name:** Copy the name of the case directory (e.g. `SPS_template-09_13_17_2019_04_19`), paste this name into the text field, then append `.c4d` to this name (e.g. `SPS_template-09_13_17_2019_04_19.c4d`).
+8) At this point you get to name the .c4d file. **Recommended file name:** Copy the name of the case directory (e.g. `SPS_template-09_13_17_2019_04_19`), paste this name into the text field, then append `.c4d` to this name (e.g. `SPS_template-09_13_17_2019_04_19.c4d`).
 
-8) Now you will be asked to name the FBX output (animation / camera data) of the simulation. It is again recommended to use the case dir name + `.fbx` as the fbx output filename (e.g. `SPS_template-09_13_17_2019_04_19.fbx`).
+9) Now you will be asked to name the FBX output (animation / camera data) of the simulation. It is again recommended to use the case dir name + `.fbx` as the fbx output filename (e.g. `SPS_template-09_13_17_2019_04_19.fbx`).
 
-9) If you would like to actually generate representative images from the camera, you will need to **render** the camera's perspective of the deployment. See the "How to Render with C4D" section for details.
+10) If you would like to actually generate representative images from the camera, you will need to **render** the camera's perspective of the deployment. See the "How to Render with C4D" section for details.
 
 ---
 ## How to Render with C4D - In the GUI :'(
@@ -194,9 +198,7 @@ To begin this section, **you must have completed all steps in "How to Run a C4D 
 
 8) Enter this number as `MAX_FRAMES` in `runBlensor.py`. This will make the simulation take a ToF scan every frame from frame 1 to frame `MAX_FRAMES`.
 
-9) Next, in `runBlensor.py`, set `NUM_SIMS_TO_RUN`. This will run the whole stochastic simulation `NUM_SIMS_TO_RUN` times. See "Directory Structure" for how each "Sample" of the sensor simulation over the range frame is stored in the case directory.
-
-You will end up with `NUM_SIMS_TO_RUN` independent sets of noisy sensor data over the scan range defined in the `MAX_FRAMES` setting step.
+9) Next, in `runBlensor.py`, set `NUM_SIMS_TO_RUN`. This will run the whole stochastic simulation `NUM_SIMS_TO_RUN` times. See "Directory Structure" for how each "Sample" of the sensor simulation over the range frame is stored in the case directory. You will end up with `NUM_SIMS_TO_RUN` independent sets of noisy sensor data over the scan range defined in the `MAX_FRAMES` setting step.
 
 10) Now, set the `outputCase` variable in `runBlensor.py` to be the name of the case directory you loaded in as an .fbx previously (e.g. `outputCase = 'SPS_template-09_13_17_2019_04_19'`).
 
