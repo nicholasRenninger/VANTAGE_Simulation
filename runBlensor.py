@@ -58,11 +58,21 @@ def configureRunSaveBlensorScanRange():
     # nominal value: [0.01 - 0.02]
     noise_sigma = 0.01
 
-    # Nick Workstation simulation drive path
-    SIMULATION_DIR = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
+    ###########################################################################
+    # ABS PATH to the directory containing the simulation repo
+    # directories will look like the following:
+    # */<SIMULATION_DIR>/4_Simulation_Cases/
+    # */<SIMULATION_DIR>/VANTAGE_Simulation/
+    #
+    # Thus, set SIMULATION_DIR such that it contains the absolute path to the
+    # overall <SIMULATION_DIR> shown above.
+    #
+    # Nick Workstation
+    # SIMULATION_DIR = 'F:\\Cloud\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
 
-    # Nick LT drive simulation drive path
-    # SIMULATION_DIR = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
+    # Nick LT
+    SIMULATION_DIR = 'D:\\Google Drive\\Undergrad\\VANTAGE\\13 Simulation'
+    ###########################################################################
 
     MM_2_M = 0.001
 
