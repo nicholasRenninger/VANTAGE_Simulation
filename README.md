@@ -327,7 +327,9 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 ---
 ## How to Run a C4D Simulation - `runC4D.py`
 
-![Alt](docs/assets/usingC4D.png "usingC4D") 
+*before you do this*
+
+![Alt](docs/assets/usingC4D.PNG "usingC4D") 
 
 1) Open C4D (you can get an educational license from the Maxon website - see `./<VANTAGE_SIMULATION_LOCATION>/docs/0 HowToGetCinema4d` for more detailed info)
 
@@ -352,7 +354,7 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 ---
 ## How to Render with C4D - In the GUI :'(
 
-![Alt](docs/assets/usingC4DRender.png "usingC4DRender")
+![Alt](docs/assets/usingC4DRender.PNG "usingC4DRender")
 
 1) After you have completed all steps in "How to Run a C4D Simulation", you must now edit the render settings. Go to Render -> Edit Render Settings...
 
@@ -363,7 +365,7 @@ You must use the ProRender engine to properly render everything. In R20.028, the
 
 4) To start a queue of renders, go to Render -> Render Queue. 
 
-![Alt](docs/assets/usingC4DRender.png "usingC4DRenderQueue")
+![Alt](docs/assets/usingC4DRender.PNG "usingC4DRenderQueue")
 
 5) "Open" the `.c4d` file in the case directory you would like to render (e.g. `SPS_template-09_13_17_2019_04_19.c4d`)
 
@@ -378,7 +380,7 @@ You must use the ProRender engine to properly render everything. In R20.028, the
 ---
 ## How to Run a Blensor Simulation - `runBlensor.py`
 
-![Alt](docs/assets/usingBlensor.png "usingBlensor")
+![Alt](docs/assets/usingBlensor.PNG "usingBlensor")
 
 To begin this section, **you must have completed all steps in "How to Run a C4D Simulation" first.** C4D is used for the simulation animation building, so you must have the .fbx file output to begin the Blensor simulation process.
 
