@@ -1,4 +1,6 @@
 # VANTAGE_Simulation
+![Alt](docs/assets/AstorTheOcelot.png "Title")
+
 *For optimal viewing of this document (and all `*.md` files), try opening it in a text editor that supports syntax highlighting for markdown `*.md` files (e.g. Sublime Text 2+).*
 
 A YAML-powered Python project to interface with C4D / Blensor to simulate the deployment of CubeSats from a NanoRacks ISS deployer.
@@ -11,6 +13,10 @@ A YAML-powered Python project to interface with C4D / Blensor to simulate the de
 This repo contains the models, documentation, and code necessary to simulate any VANTAGE use-case CubeSat deployment using both monochrome and ToF sensing. 
 
 We use [Cinema 4D R20 (C4D)](https://www.maxon.net/en-us/products/cinema-4d/overview/) to simulate our monochrome camera's properties and [Blensor](https://www.blensor.org/) to simulate our ToF flight sensor.
+
+![Alt](docs/assets/c4D_logo.png "c4d") 
+
+![Alt](docs/assets/blensor2_0.png "blensor")
 
 The important directories contained in this repo are:
 
@@ -57,7 +63,7 @@ The following directory structure shows the directory structure if you run the f
 │       ├── SPS_template-09_13_17_2019_04_19.c4d
 │       ├── SPS_template-09_13_17_2019_04_19.fbx
 │       ├── SPS_template_truth_data.json
-│       └── SPS_template-09_13_17_2019_04_19.yaml
+│       └── SPS_template.yaml
 └── **VANTAGE_Simulation**
     ├── 3d_assets
     │   ├── 1U_Slug.SLDPRT
@@ -87,19 +93,27 @@ The following directory structure shows the directory structure if you run the f
     └── runC4D.py
 ```
 
-The simulation automatically builds structured output directories to `4_Simulation_Cases`.
-
 ---
-# Simulation Parameterization / Geometry Definition
+## Simulation Parameterization / Geometry Definition
 
-The definition of deployer variables used in the parameterization and case creation can be found in:
+The definition of deployer variables used in the parameterization and case creation can be found in (shown below):
     
     `<VANTAGE_SIMULATION_LOCATION>\docs\deployer_VANTAGE_geometry_and_coordinate_frame_defs.pdf`
 
 The `docs` directory contains a lot of the relevant information used in the process of creating and validating the simulation.
 
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-1.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-2.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-3.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-4.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-5.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-6.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-7.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-8.png)
+![Alt](docs/assets/definitions/deployer_VANTAGE_geometry_and_coordinate_frame_defs-9.png)
+
 ---
-## Description of Simulation Parameters
+### Description of Simulation Parameters
 
 We have heavily scripted the creation of a C4D simulation case. Currently, the entire simulation is automated with the following being some major *settings you can change*:
 
@@ -117,14 +131,16 @@ We have heavily scripted the creation of a C4D simulation case. Currently, the e
 
 *The description of what each parameter is should be evident in the location you set it, whether it be in the YAML config, or in the source itself.*
 
----
-## How to Set the Simulation Parameters
+### How to Set the Simulation Parameters
 
 **I would highly recommend using a text editor which supports YAML syntax highlighting - it will make editing the config file much less error prone and easier to read.**
 
 In order to change these settings, make a copy of:
 `<VANTAGE_SIMULATION_LOCATION>/config/config_simulation_template.yaml`
 in the `<VANTAGE_SIMULATION_LOCATION>/config/` directory.
+
+**USE `config_simulation_template.yaml` as your starter config NOT `SPS_template.yaml`**
+*(I'm sorry I accidentally built this whole example with the `SPS_template` for some dumb reason and I'm scared to change it)*
 
 Rename your new config file with a meaningful name, following a reasonable config naming convention.
 
@@ -133,7 +149,185 @@ Edit the config file variables as you see fit to create the correct C4D case. Ma
 **As I ran out of time, some of the ToF camera simulation parameters must be adjusted in runBlensor.py itself. I am so, so sorry.**
 
 ---
-## How to Run a C4D Simulation - runC4D.py
+## Simulation Output Directory -- `4_Simulation_Cases`
+
+Each time you run a simulation case in C4D and then in Blensor (the methodology for doing so is shown in "How to Run a C4D Simulation" and "How to Render with C4D" and "How to Run a Blensor Simulation"), an output "Case Directory" (an example case directory is shown throughout this document as `./4_Simulation_Cases/SPS_template-09_13_17_2019_04_19`) is created corresponding to the name and current time of the configuration file specified in `currSimConfigFile` (see "How to Run a C4D Simulation" for more details on configuration).
+
+This directory will contain the following files, as seen in the "Directory Structure" section of this document:
+
+```bash
+.
+├── 4_Simulation_Cases
+│   ├── ...
+│   └── SPS_template-09_13_17_2019_04_19
+│       ├── ToF_Data
+│       │   ├── Sample1
+│       │   │    ├── Sample1_SPS_template-09_13_17_2019_04_19_noisy00001.pcd
+│       │   │    ├── Sample1_SPS_template-09_13_17_2019_04_19_noisy00002.pcd
+│       │   │    ├── Sample1_SPS_template-09_13_17_2019_04_19_noisy00003.pcd
+│       │   │    ├── Sample1_SPS_template-09_13_17_2019_04_19_noisy00004.pcd
+│       │   │    └── ...
+│       │   ├── Sample2
+│       │   │    ├── Sample2_SPS_template-09_13_17_2019_04_19_noisy00001.pcd
+│       │   │    ├── Sample2_SPS_template-09_13_17_2019_04_19_noisy00002.pcd
+│       │   │    ├── Sample2_SPS_template-09_13_17_2019_04_19_noisy00003.pcd
+│       │   │    ├── Sample2_SPS_template-09_13_17_2019_04_19_noisy00004.pcd
+│       │   │    └── ...
+│       │   ├── Sample3
+│       │   │    └── ...
+│       │   ├── Sample4
+│       │   │    └── ...
+│       │   └── ...
+│       ├── Optical_Data
+│       │   ├── SPS_template-09_13_17_2019_04_19_Camera_a0000.png
+│       │   ├── SPS_template-09_13_17_2019_04_19_Camera_a0001.png
+│       │   ├── SPS_template-09_13_17_2019_04_19_Camera_a0002.png
+│       │   └── ...
+│       ├── SPS_template-09_13_17_2019_04_19.blend
+│       ├── SPS_template-09_13_17_2019_04_19.c4d
+│       ├── SPS_template-09_13_17_2019_04_19.fbx
+│       ├── SPS_template_truth_data.json
+│       └── SPS_template.yaml
+```
+
+For the next description, I will generalize the specific string associated with the example case directory name - `SPS_template-09_13_17_2019_04_19`) - as `<CASE_DIR_NAME>` (e.g. `SPS_template-09_13_17_2019_04_19` <==> `<CASE_DIR_NAME>`). `<CASE_DIR_NAME>` refers to *any and all* case directory names generated during the simulation process. 
+
+`<CASE_DIR_NAME_LITE>` refers to the case directory name without the date string appended to it (e.g. `<CASE_DIR_NAME> = 'SPS_template-09_13_17_2019_04_19'`, `<CASE_DIR_NAME_LITE> = 'SPS_template'`)
+
+A detailed description of the major case directory (`<CASE_DIR_NAME>`) components are as follows:
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/ToF_Data`: This directory contains pointcloud (`*.pcd`) data from the Blensor Simulation. Each "Sample" directory contains a full set of pointclouds generated from simulated noisy ToF scans over a simulated CubeSat deployment. The reason for having multiple scans is to have multiple full scans of the same deployment, each with different random noise, to test the robustness of our pointcloud processing algorithms against sensor noise. *This directory is only populated if you manually elect to produce ToF pointcloud in Blensor -- see "How to Run a Blensor Simulation" for details*
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/Optical_Data`: This directory contains ray-traced renders (`*.png`) from the simulated VANTAGE monochrome camera generated by a C4D render. These simulated images have been calibrated and tested to be representative of images taken by the real monochrome camera we employ (see `*/docs/side_by_side_comparison.png`) *This directory is only populated if you manually elect to produce rendered images with C4D -- see "How to Render with C4D" for details*
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/<CASE_DIR_NAME>.blend`: This is the blender file containing the full deployment animation and the full ToF simulation state after it has run. This is an optional, but recommended file to save so you can go back later and see exactly what ToF parameters were used. *see "How to Run a Blensor Simulation" for details*
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/<CASE_DIR_NAME>.c4d`: This is the C4D file containing the C4D scenario with all objects, cameras, and C4D render settings. Saving this file is suggested to the user after the C4D simulation creation process. *see "How to Run a C4D Simulation" for details*
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/<CASE_DIR_NAME>.fbx`: This filetype (`.fbx`) is a generic 3D file format that will contain all 3D objects, their animations, and their parameters (including the camera parameters). This file is created in C4D and then imported into Blensor to load in the same deployment scenario. Saving this file is suggested to the user after the C4D simulation creation process. *see "How to Run a C4D Simulation" and "How to Run a Blensor Simulation" for details*
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/<CASE_DIR_NAME_LITE>_truth_data.json`: This file, in the JSON data serialization format (please, please dear god use something like this (e.g. YAML, JSON, XML, etc.) *for all* file I/O) contains all of the actual 3D positions of each CubeSat's centroid in VCF ([cm]) at each time step ([s]). The JSON schema for the truth data is *roughly* this (below generated for `./4_Simulation_Cases/SPS_template-09_13_17_2019_04_19/SPS_template_truth_data.json`):
+```json
+  "$schema": "TruthData",
+  # the entire truth data is an array of time values and the centroid locations of all CubeSats at each time value
+  "type": "array",
+  "items": [
+    {
+      # time step object, only contains an actual number
+      "type": "object",
+      "properties": {
+        # the simulation time step value
+        "t": {
+          "type": "number"
+        },
+        # the CubeSats State object
+        "pos": {
+          "type": "object",
+          "properties": {
+            # unique name given to each CubeSat based on the file used to
+            # create the object and its deployment order
+            "launch_num_3__3U_Slug.SLDPRT": {
+              "type": "array",
+              "items": [
+                {
+                  # v_hat_1 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_2 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_3 centroid location component in VCF [cm]
+                  "type": "number"
+                }
+              ]
+            },
+            # unique name given to each CubeSat based on the file used to
+            # create the object and its deployment order
+            "launch_num_0__1U_Slug.SLDPRT": {
+              "type": "array",
+              "items": [
+                {
+                  # v_hat_1 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_2 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_3 centroid location component in VCF [cm]
+                  "type": "number"
+                }
+              ]
+            },
+            # unique name given to each CubeSat based on the file used to
+            # create the object and its deployment order
+            "launch_num_1__1U_Slug.SLDPRT": {
+              "type": "array",
+              "items": [
+                {
+                  # v_hat_1 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_2 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_3 centroid location component in VCF [cm]
+                  "type": "number"
+                }
+              ]
+            },
+            # unique name given to each CubeSat based on the file used to
+            # create the object and its deployment order
+            "launch_num_2__1U_Slug.SLDPRT": {
+              "type": "array",
+              "items": [
+                {
+                  # v_hat_1 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_2 centroid location component in VCF [cm]
+                  "type": "number"
+                },
+                {
+                  # v_hat_3 centroid location component in VCF [cm]
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          # a CubeSat centroid array is req. for each CubeSat ALWAYS
+          "required": [
+            "launch_num_3__3U_Slug.SLDPRT",
+            "launch_num_0__1U_Slug.SLDPRT",
+            "launch_num_1__1U_Slug.SLDPRT",
+            "launch_num_2__1U_Slug.SLDPRT"
+          ]
+        }
+      },
+      # must ALWAYS contain both timing and position for each time step 
+      "required": [
+        "t",
+        "pos"
+      ]
+    },
+
+    # repeated t and pos object for each time step simulated
+    ...
+  ]
+```
+
+* `./4_Simulation_Cases/<CASE_DIR_NAME>/<CASE_DIR_NAME_LITE>.yaml`: This file contains the YAML configuration file that you specify in `./<VANTAGE_SIMULATION_LOCATION>/currSimConfigFile` (see "How to Run a C4D Simulation" for more details), which controls *almost* all of the simulation parameters (see "How to Run a Blensor Simulation" for details on what parameters must be set outside the YAML config file). It is automatically copied to `<CASE_DIR_NAME>` during the C4D simulation setup so you know *exactly* what settings were used to create each simulation (for audibility).
+
+---
+## How to Run a C4D Simulation - `runC4D.py`
+
+![Alt](docs/assets/usingC4D.png "usingC4D") 
 
 1) Open C4D (you can get an educational license from the Maxon website - see `./<VANTAGE_SIMULATION_LOCATION>/docs/0 HowToGetCinema4d` for more detailed info)
 
@@ -158,6 +352,8 @@ Edit the config file variables as you see fit to create the correct C4D case. Ma
 ---
 ## How to Render with C4D - In the GUI :'(
 
+![Alt](docs/assets/usingC4DRender.png "usingC4DRender")
+
 1) After you have completed all steps in "How to Run a C4D Simulation", you must now edit the render settings. Go to Render -> Edit Render Settings...
 
 2) In the Render settings, make sure to select the **ProRender** setting. You may have to toggle between render engines before ProRender activates.
@@ -166,6 +362,8 @@ You must use the ProRender engine to properly render everything. In R20.028, the
 3) In the ProRender settings, make sure you turn ON **Depth of Field**. All other render settings should be automatically set by the python module. Close the render settings menu.
 
 4) To start a queue of renders, go to Render -> Render Queue. 
+
+![Alt](docs/assets/usingC4DRender.png "usingC4DRenderQueue")
 
 5) "Open" the `.c4d` file in the case directory you would like to render (e.g. `SPS_template-09_13_17_2019_04_19.c4d`)
 
@@ -178,7 +376,9 @@ You must use the ProRender engine to properly render everything. In R20.028, the
 9) Click "Start Render" and watch your CPU and GPU melt for an hour. :)
 
 ---
-## How to Run a Blensor Simulation - runBlensor.py
+## How to Run a Blensor Simulation - `runBlensor.py`
+
+![Alt](docs/assets/usingBlensor.png "usingBlensor")
 
 To begin this section, **you must have completed all steps in "How to Run a C4D Simulation" first.** C4D is used for the simulation animation building, so you must have the .fbx file output to begin the Blensor simulation process.
 
@@ -227,7 +427,9 @@ These steps should only be done once you are happy with your simulations and are
     - `./4_Simulation_Cases/<CURRENT_CASE_NAME>/ToF_Data/Sample<XXX>/Sample<XXX>_<CURRENT_CASE_NAME>`
     - `./4_Simulation_Cases/<CURRENT_CASE_NAME>/ToF_Data/Sample<XXX>/Sample<XXX>_<CURRENT_CASE_NAME>.pcd`
 
-20) Congrats on simulating a ToF Camera!
+20) Save the current scence as a `.blend` file in the case directory (e.g. `./4_Simulation_Cases/<CURRENT_CASE_NAME>/<CURRENT_CASE_NAME>.blend`)
+
+21) Congrats on simulating a ToF Camera!
 
 ---
 ## Contact Info
