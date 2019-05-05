@@ -1,31 +1,30 @@
 # VANTAGE_Simulation
-![Alt](docs/assets/AstorTheOcelot.png "Title")
-
 *For optimal viewing of this document (and all `*.md` files), try opening it in a text editor that supports syntax highlighting for markdown `*.md` files (e.g. Sublime Text 2+).*
 
-A YAML-powered Python project to interface with C4D / Blensor to simulate the deployment of CubeSats from a NanoRacks ISS deployer.
+![Alt](docs/assets/AstorTheOcelot.png "AstorTheVANTAGEOcelot")
 
-**This repository is the home for the VANTAGE Simulation project, which is a component of the larger [VANTAGE (2018-19) project](https://drive.google.com/drive/folders/1SbkY5wjO9he67aB8XnaSnfTiQf65CChv?usp=sharing) at CU Boulder**
+**A YAML-powered Python project to interface with C4D / Blensor to simulate the deployment of CubeSats from a NanoRacks ISS deployer.**
+
+*This repository is the home for the VANTAGE Simulation project, which is a component of the larger [VANTAGE (2018-19) project](https://drive.google.com/drive/folders/1SbkY5wjO9he67aB8XnaSnfTiQf65CChv?usp=sharing) at CU Boulder. You can find more of the software developed for the VANTAGE project on the [VANTAGE organization page](https://github.com/vantagecu).*
 
 ---
 
 ## About this Repo
 
-This repo contains the models, documentation, and code necessary to simulate any VANTAGE use-case CubeSat deployment using both monochrome and ToF sensing. 
+This repo contains the models, documentation, and code necessary to simulate any VANTAGE use-case CubeSat deployment using both monochrome and ToF sensing.
 
 We use [Cinema 4D R20 (C4D)](https://www.maxon.net/en-us/products/cinema-4d/overview/) to simulate our monochrome camera's properties and [Blensor](https://www.blensor.org/) to simulate our ToF flight sensor.
 
-![Alt](docs/assets/c4D_logo.png "c4d") 
-
+![Alt](docs/assets/c4D_logo.png "c4d")
 ![Alt](docs/assets/blensor2_0.png "blensor")
 
 The important directories contained in this repo are:
 
-* config: this dir contains the YAML configuration files used to completely automate the creation of a C4D animation case.
+* `config`: this dir contains the YAML configuration files used to completely automate the creation of a C4D animation case.
 
-* 3d_assets: this dir contains the 3D deployer model as well as the 3D cubesat models used in the simulation.
+* `3d_assets`: this dir contains the 3D deployer model as well as the 3D cubesat models used in the simulation.
 
-* docs: the homeland for wild simulation documentation
+* `docs`: the homeland for wild simulation documentation
 
 ---
 
@@ -100,7 +99,7 @@ The following directory structure shows the directory structure if you run the f
 ## Simulation Parameterization / Geometry Definition
 
 The definition of deployer variables used in the parameterization and case creation can be found in (shown below):
-    
+
 `<VANTAGE_SIMULATION>\docs\deployer_VANTAGE_geometry_and_coordinate_frame_defs.pdf`
 
 The `docs` directory contains a lot of the relevant information used in the process of creating and validating the simulation.
@@ -195,7 +194,7 @@ This directory will contain the following files, as seen in the "Directory Struc
 │       └── SPS_template.yaml
 ```
 
-For the next description, I will generalize the specific string associated with the example case directory name - `SPS_template-09_13_17_2019_04_19`) - as `<CASE_DIR_NAME>` (e.g. `SPS_template-09_13_17_2019_04_19` <==> `<CASE_DIR_NAME>`). `<CASE_DIR_NAME>` refers to *any and all* case directory names generated during the simulation process. 
+For the next description, I will generalize the specific string associated with the example case directory name - `SPS_template-09_13_17_2019_04_19`) - as `<CASE_DIR_NAME>` (e.g. `SPS_template-09_13_17_2019_04_19` <==> `<CASE_DIR_NAME>`). `<CASE_DIR_NAME>` refers to *any and all* case directory names generated during the simulation process.
 
 `<CASE_DIR_NAME_LITE>` refers to the case directory name without the date string appended to it (e.g. `<CASE_DIR_NAME> = 'SPS_template-09_13_17_2019_04_19'`, `<CASE_DIR_NAME_LITE> = 'SPS_template'`)
 
@@ -316,7 +315,7 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
           ]
         }
       },
-      # must ALWAYS contain both timing and position for each time step 
+      # must ALWAYS contain both timing and position for each time step
       "required": [
         "t",
         "pos"
@@ -335,7 +334,7 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 ## How to Run a C4D Simulation
 ### `runC4D.py`
 
-![Alt](docs/assets/usingC4D.PNG "usingC4D") 
+![Alt](docs/assets/usingC4D.PNG "usingC4D")
 
 1) Open C4D (you can get an educational license from the Maxon website - see `./<VANTAGE_SIMULATION_LOCATION>/docs/0 HowToGetCinema4d` for more detailed info)
 
@@ -366,11 +365,11 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 1) After you have completed all steps in [How to Run a C4D Simulation](#how-to-run-a-c4d-simulation), you must now edit the render settings. Go to Render -> Edit Render Settings...
 
 2) In the Render settings, make sure to select the **ProRender** setting. You may have to toggle between render engines before ProRender activates.
-You must use the ProRender engine to properly render everything. In R20.028, there is a bug that prevents automated choice of render engine. MAKE SURE that the ProRender menu is properly set! 
+You must use the ProRender engine to properly render everything. In R20.028, there is a bug that prevents automated choice of render engine. MAKE SURE that the ProRender menu is properly set!
 
 3) In the ProRender settings, make sure you turn ON **Depth of Field**. All other render settings should be automatically set by the python module. Close the render settings menu.
 
-4) To start a queue of renders, go to Render -> Render Queue. 
+4) To start a queue of renders, go to Render -> Render Queue.
 
 ![Alt](docs/assets/usingC4DRenderQueue.PNG "usingC4DRenderQueue")
 
@@ -405,7 +404,7 @@ To begin this section, **you must have completed all steps in [How to Run a C4D 
 
 6) In the "Data Outliner" sub-menu, select *ONLY* the "Camera" Object.
 
-7) Determine how many frames it takes in the simulation for the closest CubeSat to reach its desired distance away from the deployer. 
+7) Determine how many frames it takes in the simulation for the closest CubeSat to reach its desired distance away from the deployer.
 
 8) Enter this number as `MAX_FRAMES` in `runBlensor.py`. This will make the simulation take a ToF scan every frame from frame 1 to frame `MAX_FRAMES`.
 
@@ -413,7 +412,7 @@ To begin this section, **you must have completed all steps in [How to Run a C4D 
 
 10) Now, set the `outputCase` variable in `runBlensor.py` to be the name of the case directory you loaded in as an .fbx previously (e.g. `outputCase = 'SPS_template-09_13_17_2019_04_19'`).
 
-11) Now, go back to Blensor. Open the region editor "Text Editor" in Blensor, and open `./<VANTAGE_SIMULATION_LOCATION>/runBlensor.py`. 
+11) Now, go back to Blensor. Open the region editor "Text Editor" in Blensor, and open `./<VANTAGE_SIMULATION_LOCATION>/runBlensor.py`.
 
 12) Again, in the "Data Outliner" region editor, ensure you have selected *ONLY* the "Camera" Object.
 
