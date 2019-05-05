@@ -332,8 +332,8 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 
 ---
 
-## How to Run a C4D Simulation - `runC4D.py`
-
+## How to Run a C4D Simulation
+### `runC4D.py`
 
 ![Alt](docs/assets/usingC4D.PNG "usingC4D") 
 
@@ -386,7 +386,8 @@ You must use the ProRender engine to properly render everything. In R20.028, the
 
 ---
 
-## How to Run a Blensor Simulation - `runBlensor.py`
+## How to Run a Blensor Simulation
+### `runBlensor.py`
 
 ![Alt](docs/assets/usingBlensor.PNG "usingBlensor")
 
