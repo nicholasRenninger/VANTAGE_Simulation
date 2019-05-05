@@ -365,7 +365,7 @@ You must use the ProRender engine to properly render everything. In R20.028, the
 
 4) To start a queue of renders, go to Render -> Render Queue. 
 
-![Alt](docs/assets/usingC4DRender.PNG "usingC4DRenderQueue")
+![Alt](docs/assets/usingC4DRenderQueue.PNG "usingC4DRenderQueue")
 
 5) "Open" the `.c4d` file in the case directory you would like to render (e.g. `SPS_template-09_13_17_2019_04_19.c4d`)
 
