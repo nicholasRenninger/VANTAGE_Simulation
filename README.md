@@ -5,7 +5,7 @@
 
 **A YAML-powered Python project to interface with C4D / Blensor to simulate the deployment of CubeSats from a NanoRacks ISS deployer.**
 
-*This repository is the home for the VANTAGE Simulation project, which is a component of the larger [VANTAGE (2018-19) project](https://drive.google.com/drive/folders/1SbkY5wjO9he67aB8XnaSnfTiQf65CChv?usp=sharing) at CU Boulder. You can find more of the software developed for the VANTAGE project on the [VANTAGE organization page](https://github.com/vantagecu).*
+*This repository is the home for the VANTAGE Simulation project, which is a component of the larger [VANTAGE (2018-19) project](https://drive.google.com/drive/folders/1SbkY5wjO9he67aB8XnaSnfTiQf65CChv?usp=sharing) at the [CU Boulder Ann and H.J. Smead Aerospace Engineering Sciences Department](https://www.colorado.edu/aerospace/). Our project is sponsored by a collaboration between [CCAR](https://www.colorado.edu/ccar/) and [NanoRacks](http://nanoracks.com/). You can find more of the software developed for the VANTAGE project on the [VANTAGE organization page](https://github.com/vantagecu).*
 
 ---
 
@@ -24,7 +24,7 @@ The important directories contained in this repo are:
 
 * `3d_assets`: this dir contains the 3D deployer model as well as the 3D cubesat models used in the simulation.
 
-* `docs`: the homeland for wild simulation documentation
+* `docs`: the homeland for wild simulation documentation. There are videos in here showing visualizations from both C4D and Blensor simulation of the same deployment, and actual ISS CubeSat deployment footage from [NanoRacks](http://nanoracks.com/), among other useful things.
 
 ---
 
