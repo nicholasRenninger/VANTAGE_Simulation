@@ -332,6 +332,8 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 ---
 
 ## How to Run a C4D Simulation
+### First-time set up of the c4d python environment
+
 ### `runC4D.py`
 
 ![Alt](docs/assets/usingC4D.PNG "usingC4D")
@@ -341,6 +343,32 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 2) Open the script manager (Script -> Script Manager) and the console (Script -> Console)
 
 3) From the script manager, open `./<VANTAGE_SIMULATION_LOCATION>/runC4D.py`
+
+3.5) **If running everything for the first time, you will need to get the 'pyyaml' package on the c4d python path.**
+
+* in the python script console (see image above) do the following:
+```python
+>>> import sys
+>>> print(sys.path)
+```
+
+* now, unzip the contents of `./<VANTAGE_SIMULATION_LOCATION>/site-packages.zip` and place them in a directory listed in the `print(sys.path)` call.
+
+If on macOS, the directory to put the unzipped `./<VANTAGE_SIMULATION_LOCATION>/site-packages.zip` could be:
+`/Applications/MAXON/Cinema 4D R20 Education/resource/modules/python/libs/osx/python27.framework/lib/python2.7`
+
+If on windows, the directory to put the unzipped `./<VANTAGE_SIMULATION_LOCATION>/site-packages.zip` could be:
+`C:\Program Files\MAXON\Cinema 4D R20 Education\resource\modules\python\libs\win64\python27.vs2008.framework\lib`
+
+* you should now have the ability to `import yaml` and `import pip` from the c4d python script console.
+
+* if you need to install more packages to the c4d python distribution (like `numpy`), now you can simply do:
+
+```python
+>>> import pip
+>>> pip.main(['install', 'numpy'])
+>>> import numpy
+```
 
 4) Edit `./<VANTAGE_SIMULATION_LOCATION>/currSimConfigFile` with the name of the config file you would like to run the simulation with (e.g. `SPS_template` to use `SPS_template.yaml` as your input config file).
 
