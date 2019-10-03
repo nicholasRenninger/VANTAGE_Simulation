@@ -362,7 +362,7 @@ If on windows, the directory to put the unzipped `./<VANTAGE_SIMULATION_LOCATION
 
 * you should now have the ability to `import yaml` and `import pip` from the c4d python script console.
 
-* if you need to install more packages to the c4d python distribution (like `numpy`), now you can simply do:
+* if you need to install more packages to the c4d python distribution (like `numpy`), now you can simply do (from the c4d python script console):
 
 ```python
 >>> import pip
