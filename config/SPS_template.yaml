@@ -1,8 +1,8 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-G_DRIVE_PATH: 'D:\Google Drive\Undergrad\VANTAGE'  # Nick
-# G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
+SIM_DIR_LOCATION: 'D:\Google Drive\Undergrad\VANTAGE'  # Nick
+# SIM_DIR_LOCATION: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to run for the simulation
 # this also corresponds to the output rate the ToF camera

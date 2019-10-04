@@ -249,8 +249,8 @@ def addCamera(settings, doc):
 def setup_deployer(settings, doc):
 
     dep = settings['DEPLOYER_FILEPATH']
-    gDrive = settings['G_DRIVE_PATH']
-    fullFile = os.path.join(gDrive, dep)
+    simLoc = settings['SIM_DIR_LOCATION']
+    fullFile = os.path.join(simLoc, dep)
 
     # Import Deployer model
     c4d.documents.MergeDocument(doc, fullFile, c4d.SCENEFILTER_OBJECTS |
@@ -377,7 +377,7 @@ def calculateOriginFromTubeNumber(desired_tube, settings, translVec):
 #
 def setup_cubesats(settings, des_tube_origin, doc):
     objs = []
-    gDrive = settings['G_DRIVE_PATH']
+    simLoc = settings['SIM_DIR_LOCATION']
 
     cubeSatSizes_strs = settings['CUBESATS_SIZES']
     cubeSatSizes_conversion = settings['U_STR_TO_U']
@@ -430,7 +430,7 @@ def setup_cubesats(settings, des_tube_origin, doc):
 
         # Import the CubeSat Model
         cubesat = settings['CUBESAT_FILEPATHS'][cubeSatSizes_strs[ii]]
-        fullFile = os.path.join(gDrive, cubesat)
+        fullFile = os.path.join(simLoc, cubesat)
 
         # get length of the CubeSat Model
         # [cm]

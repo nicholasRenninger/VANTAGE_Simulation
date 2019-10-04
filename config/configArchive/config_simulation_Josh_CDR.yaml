@@ -1,8 +1,8 @@
 ---
 
 # set your path to the google drive path VANTAGE directory
-G_DRIVE_PATH: 'D:\Google Drive\School\VANTAGE'  # Nick
-# G_DRIVE_PATH: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
+SIM_DIR_LOCATION: 'D:\Google Drive\School\VANTAGE'  # Nick
+# SIM_DIR_LOCATION: 'G:\My Drive\VANTAGE'  # Jerry's Workstation
 
 # number of frames per second to render the simulation video at
 # [frames/sec]

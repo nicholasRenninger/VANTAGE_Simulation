@@ -1,18 +1,19 @@
 ---
 
-# set your path to the VANTAGE sim directory
+# set your path to the VANTAGE sim directory.
 # *\13 Simulation\3 C4D Scripts is the same as:
-# */<VANTAGE_SIMULATION_LOCATION>/VANTAGE_Simulation
+# */<VANTAGE_Simulation>/VANTAGE_Simulation
+# if running this from a cloned git repo.
 #
 # Case Output Directory:
 # *\13 Simulation\4_Simulation_Cases
 # */<VANTAGE_SIMULATION_LOCATION>/4_Simulation_Cases
 #
 # Nick
-G_DRIVE_PATH: 'D:\Google Drive\Undergrad\VANTAGE\13 Simulation\3 C4D Scripts'
+SIM_DIR_LOCATION: 'D:\Google Drive\Undergrad\VANTAGE\13 Simulation\3 C4D Scripts'
 
 # Jerry's Workstation
-# G_DRIVE_PATH: 'G:\My Drive\VANTAGE'
+# SIM_DIR_LOCATION: 'G:\My Drive\VANTAGE'
 
 # number of frames per second to run for the simulation
 # this also corresponds to the output rate the ToF camera
