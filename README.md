@@ -149,7 +149,21 @@ Rename your new config file with a meaningful name, following a reasonable confi
 
 Edit the config file variables as you see fit to create the correct C4D case. Make sure to visually inspect the case before you run a lengthy simulation.
 
-**As I ran out of time, some of the ToF camera simulation parameters must be adjusted in runBlensor.py itself. I am so, so sorry.**
+**As I ran out of time, some of the ToF camera simulation parameters must be adjusted in runBlensor.py itself.**
+
+#### Simulation Path Setting
+***Make sure to set the path `SIM_DIR_LOCATION` in the YAML config file to be the full path string to wherever you cloned the `VANTAGE_Simulation` directory.***
+
+e.g. you cloned `VANTAGE_Simulation` to your desktop: `/Users/<USERNAME>/Desktop`. Then, you should set the `SIM_DIR_LOCATION` key in the config file to be:
+```yaml
+---
+
+SIM_DIR_LOCATION: '/Users/<USERNAME>/Desktop/VANTAGE_Simulation'
+```
+
+If you encounter an error like:
+`TypeError: 'NoneType' object is not callable`
+while doing operations on objects, it likely means that you have set this path incorrectly and the simulation cannot find the 3d object files in `<VANTAGE_SIMULATION_LOCATION>/3s_assets/`.
 
 ---
 
