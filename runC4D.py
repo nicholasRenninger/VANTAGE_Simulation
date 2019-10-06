@@ -41,6 +41,10 @@ def getConfigFile():
 
     configSetupFile = 'currSimConfigFile'
 
+    # need to ensure that the cwd of the script is the same directory as this
+    # python file so it can find the configuration configSetupFile
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
     try:
         with open(configSetupFile, 'r') as stream:
             configFileName = file.read(stream)
