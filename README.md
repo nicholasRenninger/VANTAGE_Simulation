@@ -346,7 +346,6 @@ A detailed description of the major case directory (`<CASE_DIR_NAME>`) component
 ---
 
 ## How to Run a C4D Simulation
-### First-time set up of the c4d python environment
 
 ### `runC4D.py`
 
