@@ -163,17 +163,17 @@ TUBE_ORIGIN_COEFFS:
 
 # relative filepath to the Google Drive location of the deployer model file
 DEPLOYER_FILEPATH:
-  '13 Simulation\2 3D Models\NR_Dual_Quadpack_Simulation_Assem_v3.STL'
+  '3d_assets/NR_Dual_Quadpack_Simulation_Assem_v3.STL'
 
 # relative filepath to the Google Drive location of the 1U, 2U, & 3U CubeSat
 # model files
 CUBESAT_FILEPATHS:
-  1U: '13 Simulation\2 3D Models\1U_Slug.SLDPRT'
-  2U: '13 Simulation\2 3D Models\2U_Slug.SLDPRT'
-  3U: '13 Simulation\2 3D Models\3U_Slug.SLDPRT'
-  4U: '13 Simulation\2 3D Models\4U_Slug.SLDPRT'
-  5U: '13 Simulation\2 3D Models\5U_Slug.SLDPRT'
-  6U: '13 Simulation\2 3D Models\6U_Slug.SLDPRT'
+  1U: '3d_assets/1U_Slug.SLDPRT'
+  2U: '3d_assets/2U_Slug.SLDPRT'
+  3U: '3d_assets/3U_Slug.SLDPRT'
+  4U: '3d_assets/4U_Slug.SLDPRT'
+  5U: '3d_assets/5U_Slug.SLDPRT'
+  6U: '3d_assets/6U_Slug.SLDPRT'
 
 
 # camera location in X,Y,Z relative to the VANTAGE frame's origin
